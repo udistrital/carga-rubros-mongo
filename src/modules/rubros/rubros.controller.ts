@@ -12,9 +12,4 @@ export class RubrosController {
     cargaRubros(@UploadedFile() file) {
        return this.rubrosService.cargarRubro(file)
     }
-
-    @Get('nose')
-    nose() {
-        console.log('holi')
-    }
 }
