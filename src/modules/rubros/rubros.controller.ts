@@ -10,7 +10,7 @@ export class RubrosController {
     @Post('carga')
     @UseInterceptors(FileInterceptor('file'))
     cargaRubros(@UploadedFile() file) {
-        this.rubrosService.cargarRubro(file)
+       return this.rubrosService.cargarRubro(file)
     }
 
     @Get('nose')
