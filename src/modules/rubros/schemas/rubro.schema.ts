@@ -32,4 +32,4 @@ export class Rubros extends Document {
     apropiaciones: Boolean
 }
 
-export const ChatSchema = SchemaFactory.createForClass(Rubros);
+export const RubrosSchema = SchemaFactory.createForClass(Rubros);

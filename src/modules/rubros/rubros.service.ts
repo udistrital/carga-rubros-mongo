@@ -1,16 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { RubroMongo } from './interfaces/rubro-mongo.interface';
+import { CreateRubroMongoService } from './create-rubro-mongo/create-rubro-mongo.service';
+
 
 
 @Injectable()
 export class RubrosService {
 
-    cargarRubro(archivo) {
+    constructor( private createRubroMongoService: CreateRubroMongoService ) {}
+
+    async cargarRubro(archivo) {
         const name = archivo.originalname.split('.xlsx')[0]
         const jsonRubros = this.leerArchivo(archivo)[name];
         console.log(jsonRubros.length)
         const jsonOrganizado = this.organizarArbol(jsonRubros)
         console.log(jsonOrganizado.length)
+        await this.ingresarRubros(jsonOrganizado);
         return { mensaje: 'exito' }
         // return jsonOrganizado
     }
@@ -33,7 +38,7 @@ export class RubrosService {
 
     organizarArbol(jsonRubros: any[]) {
         let respuesta: RubroMongo[] = []
-        for (let i = 1; i < 3; i++) { // 1 - 9
+        for (let i = 1; i < 9; i++) { // 1 - 9
             respuesta = respuesta.concat(this.padresConHijos(jsonRubros,i))
         }
         return respuesta
@@ -85,5 +90,11 @@ export class RubrosService {
     eliminarDuplicados(array: any[]) {
         array = array.filter((item, index) => array.indexOf(item) === index);
         return array
+    }
+
+    async ingresarRubros(arrayRubros: RubroMongo[]) {
+        for (let i = 0; i < arrayRubros.length; i++) {
+            await this.createRubroMongoService.create(arrayRubros[i]);
+        }
     }
 }
