@@ -11,5 +11,4 @@ export interface RubroMongo {
     unidad_ejecutora?: string,
     bloqueado?: boolean,
     apropiaciones?: boolean,
-    prueba?: any
 }
