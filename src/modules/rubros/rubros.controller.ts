@@ -1,4 +1,20 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Get, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express/multer/interceptors/file.interceptor';
+import { RubrosService } from './rubros.service';
 
 @Controller('rubros')
-export class RubrosController {}
+export class RubrosController {
+
+    constructor( private readonly rubrosService: RubrosService ){}
+
+    @Post('carga')
+    @UseInterceptors(FileInterceptor('file'))
+    cargaRubros(@UploadedFile() file) {
+        this.rubrosService.cargarRubro(file)
+    }
+
+    @Get('nose')
+    nose() {
+        console.log('holi')
+    }
+}
