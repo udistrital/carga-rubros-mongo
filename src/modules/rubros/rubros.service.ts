@@ -38,7 +38,7 @@ export class RubrosService {
 
     organizarArbol(jsonRubros: any[]) {
         let respuesta: RubroMongo[] = []
-        for (let i = 1; i < 9; i++) { // 1 - 9
+        for (let i = 1; i < 3; i++) { // 1 - 9
             respuesta = respuesta.concat(this.padresConHijos(jsonRubros,i))
         }
         return respuesta

@@ -12,4 +12,9 @@ export class RubrosController {
     cargaRubros(@UploadedFile() file) {
        return this.rubrosService.cargarRubro(file)
     }
+
+    @Get('test')
+    prueba() {
+        console.log()
+    }
 }
