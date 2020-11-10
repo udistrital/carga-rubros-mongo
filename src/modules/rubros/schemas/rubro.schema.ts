@@ -1,7 +1,7 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({ collection: process.env.ESQUEMA })
+@Schema({ collection: process.env.ESQUEMA_MONGO })
 export class Rubros extends Document {
     @Prop()
     _id: String

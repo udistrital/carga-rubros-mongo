@@ -9,7 +9,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot( { isGlobal: true, } ),
     RubrosModule,
-    MongooseModule.forRoot('mongodb://localhost:27018/prueba'),
+    MongooseModule.forRoot(`mongodb://${process.env.CONECCION_MONGO}`),
   ],
   controllers: [AppController],
   providers: [AppService],
