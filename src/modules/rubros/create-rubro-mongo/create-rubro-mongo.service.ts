@@ -7,10 +7,11 @@ import { Rubros } from '../schemas/rubro.schema';
 
 @Injectable()
 export class CreateRubroMongoService {
-    constructor(@InjectModel(Rubros.name) private readonly rubroModel: Model<Rubros>) {}
+  constructor(@InjectModel(Rubros.name) private readonly rubroModel: Model<Rubros>) { }
 
-    async create(createRubroDto: CreateRubroDto): Promise<Rubros> {
-        const createdRubro = new this.rubroModel(createRubroDto);
-        return createdRubro.save();
-      }
+  async create(createRubroDto: CreateRubroDto): Promise<Rubros> {
+    const createdRubro = new this.rubroModel(createRubroDto);
+    return createdRubro.save();
+
+  }
 }
