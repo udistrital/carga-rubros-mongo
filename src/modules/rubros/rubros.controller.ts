@@ -15,6 +15,6 @@ export class RubrosController {
 
     @Get('test')
     prueba() {
-        console.log()
+        console.log( process.env.ESQUEMA )
     }
 }
