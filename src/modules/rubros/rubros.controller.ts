@@ -15,6 +15,6 @@ export class RubrosController {
 
     @Get('test')
     prueba() {
-        console.log( process.env.ESQUEMA_MONGO )
+        console.log( process.env.COLLECTION_MONGO )
     }
 }

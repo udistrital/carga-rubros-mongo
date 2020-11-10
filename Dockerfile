@@ -6,11 +6,19 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-ARG ESQUEMA_MONGO
+ARG DB_MONGO
 
-ARG CONECCION_MONGO
+ARG COLLECTION_MONGO
 
-# RUN npm i -g @nestjs/cli
+ARG USER_MONGO
+
+ARG PASS_MONGO
+
+ARG HOST_MONGO
+
+ARG PORT_MONGO
+
+
 RUN npm install
 
 CMD [ "npm", "run", "start:dev" ]

@@ -13,8 +13,12 @@ services:
         container_name: "rubros-service"
         restart: always
         environment: 
-            - ESQUEMA_MONGO=arbolitos
-            - CONECCION_MONGO=192.168.0.7:27018/prueba
+            - COLLECTION_MONGO=arbol_rubros
+            - DB_MONGO=plan_cuentas
+            - USER_MONGO=edwar
+            - PASS_MONGO=diaz
+            - HOST_MONGO=192.168.0.7
+            - PORT_MONGO=27019
         build: .
         ports: 
             - 3000:3000
