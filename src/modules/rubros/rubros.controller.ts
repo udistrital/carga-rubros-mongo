@@ -1,6 +1,6 @@
 import { Controller, Post, Get, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express/multer/interceptors/file.interceptor';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { RubrosService } from './rubros.service';
 
 @ApiTags('rubros')
@@ -21,14 +21,15 @@ export class RubrosController {
             },
           },
         },
+        description: 'archivo de resultado de la consulta del arbol de rubros de sicapital'
       })
     @UseInterceptors(FileInterceptor('file'))
     cargaRubros(@UploadedFile() file) {
        return this.rubrosService.cargarRubro(file)
     }
 
-    @Get('test')
-    prueba() {
-        console.log( process.env.COLLECTION_MONGO )
-    }
+    // @Get('test')
+    // prueba() {
+    //     console.log( process.env.COLLECTION_MONGO )
+    // }
 }
