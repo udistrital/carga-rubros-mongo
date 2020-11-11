@@ -70,3 +70,24 @@ docker-compose up
 ```
 
 
+### Uso.
+
+El api cuenta con su propio **swagger** y adicionalmente se proporciona un archivo json de la colección de postman con el fin de poder importarse en postman y realizar el proceso desde allí adicionalmente la colección de postman contiene un ejemplo del resultado del get del arbol de rubros realizado por el api [plan_cuentas_mongo_crud](https://github.com/udistrital/plan_cuentas_mongo_crud)
+
+#### Usando Swagger
+
+Ingrese al [localhost:3000/api/](http://localhost:3000/api/) alli le aparecera el endpoint a usar y al dar clic en el boton `Try it Out` le permitira seleccionar un archivo de su ordenador el cual se cargara luego de ello darle clic al boton `Execute`
+
+![imagen de peticion por swagger](./documentacion/rubros_swagger1.png)
+
+Tardara unos segundos mientras procesa los datos y los ingresa a la base de datos, el mayor tiempo de este proceso es consumido por el ingreso a la base de datos. Despues de ese tiempo mandara un mensaje de exito.
+
+![imagen de peticion por swagger](./documentacion/rubros_swagger2.png)
+
+En caso de presentarse errores el api informara de ello
+
+#### Usando Postman
+
+Es similar a la opcion anterior con la diferencia de que primero debe importar [la colección de postman](./documentacion/Rubros_udistrital.postman_collection.json) luego de ello cargar el archivo en la partaña de `Body` , luego enviar la peticion.
+
+![imagen de peticion por swagger](./documentacion/rubros_postman.png)

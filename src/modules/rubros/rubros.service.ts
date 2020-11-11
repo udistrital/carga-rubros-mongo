@@ -17,7 +17,7 @@ export class RubrosService {
             const jsonOrganizado = this.organizarArbol(jsonRubros)
             console.log(jsonOrganizado.length)
             await this.ingresarRubros(jsonOrganizado);
-            return { mensaje: 'exito' }
+            return { mensaje: 'rubros ingresados exitosamente en la colección: ' + process.env.COLLECTION_MONGO }
         } else {
             throw new HttpException('El archivo tiene que tener la extencion de formato .xlsx', 400)
 
