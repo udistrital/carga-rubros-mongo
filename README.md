@@ -1,75 +1,93 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+## Cargar Rubros Mongo
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Es un api construida en [Nest Js](https://nestjs.com/) con la finalidad de transformar lo datos de los rubros que se almacenan en sicapital a un formato json el cual recibira la base de datos en MongoDB , dicha información de los arboles de rubros siendo consumida con el api de [plan_cuentas_mongo_crud](https://github.com/udistrital/plan_cuentas_mongo_crud)
 
-## Description
+### Proceso realizado por el api
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- el api recibe un archivo `.xlsx` el cual es resultado de la consulta de los rubro de sicapital
 
-## Installation
+- el api interpreta el archivo y lo convierte a formato json
+
+- se procesa el json analizando campos y valores con la finalidad de armar el json que recibe la base de datos de mongo, este proceso se agiliza gracias a poder iterar dinamicamente con los campos json y con [metodos de los array](https://javascript.info/array-methods).
+
+- finalizando ingresa toda la informacion en la base de datos.
+
+### Instalacion y Ejecución
+
+El api esta desarrollada en un framework de javascript que usa typescript , para su facil instalación se ha dockerizado.
+
+#### Requisitos
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- Tener conocimiento de la base de credenciales de la base de datos a ingresar los datos
+
+- el documento de excel debe de tener minimo las siguientes columnas: 	
+    - DESC_NIVEL1
+    - CADENA_NIVEL1
+    - DESC_NIVEL2
+    - CADENA_NIVEL2
+    - DESC_NIVEL3
+    - CADENA_NIVEL3
+    - DESC_NIVEL4
+    - CADENA_NIVEL4
+    - DESC_NIVEL5
+    - CADENA_NIVEL5
+    - DESC_NIVEL6
+    - CADENA_NIVEL6
+    - DESC_NIVEL7
+    - CADENA_NIVEL7
+    - DESC_NIVEL8
+    - CADENA_NIVEL8
+
+
+### Instalación
+
+En el archivo de `docker-compose` se deben de configurar las siguiente variables segun sea el caso:
+- **COLLECTION_MONGO** = colección que almacenara el arbol de rubros
+- **DB_MONGO** = base de datos que contendra la colección
+- **USER_MONGO** = usuario con acceso a la base de datos
+- **PASS_MONGO** = contraseña del usuario
+- **HOST_MONGO** = url o ip de la base de datos
+- **PORT_MONGO** = puerto de la base de datos
+
+***Nota 1: El api se conecta a una base de datos designada , el api no monta ninguna base de datos***
+
+***Nota 2: En caso de no tomar la variable del esquema creara por defecto el esquema `rubros`***
+
+
+
+### Ejecución
+
+En la raiz del proyecto ejecutar los siguiente comandos
 
 ```bash
-$ npm install
+# build del proyecto con docker-compose
+docker-compose build
+
+# ejecución del api
+docker-compose up
 ```
 
-## Running the app
 
-```bash
-# development
-$ npm run start
+### Uso.
 
-# watch mode
-$ npm run start:dev
+El api cuenta con su propio **swagger** y adicionalmente se proporciona un archivo json de la colección de postman con el fin de poder importarse en postman y realizar el proceso desde allí adicionalmente la colección de postman contiene un ejemplo del resultado del get del arbol de rubros realizado por el api [plan_cuentas_mongo_crud](https://github.com/udistrital/plan_cuentas_mongo_crud)
 
-# production mode
-$ npm run start:prod
-```
+#### Usando Swagger
 
-## Test
+Ingrese al [localhost:3000/api/](http://localhost:3000/api/) alli le aparecera el endpoint a usar y al dar clic en el boton `Try it Out` le permitira seleccionar un archivo de su ordenador el cual se cargara luego de ello darle clic al boton `Execute`
 
-```bash
-# unit tests
-$ npm run test
+![imagen de peticion por swagger](./documentacion/rubros_swagger1.png)
 
-# e2e tests
-$ npm run test:e2e
+Tardara unos segundos mientras procesa los datos y los ingresa a la base de datos, el mayor tiempo de este proceso es consumido por el ingreso a la base de datos. Despues de ese tiempo mandara un mensaje de exito.
 
-# test coverage
-$ npm run test:cov
-```
+![imagen de peticion por swagger](./documentacion/rubros_swagger2.png)
 
-## Support
+En caso de presentarse errores el api informara de ello
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### Usando Postman
 
-## Stay in touch
+Es similar a la opcion anterior con la diferencia de que primero debe importar [la colección de postman](./documentacion/Rubros_udistrital.postman_collection.json) luego de ello cargar el archivo en la partaña de `Body` , luego enviar la peticion.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-  Nest is [MIT licensed](LICENSE).
+![imagen de peticion por swagger](./documentacion/rubros_postman.png)
