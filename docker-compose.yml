@@ -1,0 +1,30 @@
+version: '3'
+
+services: 
+    # mongo:
+    #     image: mongo
+    #     container_name: mongo-service
+    #     ports: 
+    #         - 27017:27017
+    #     expose: 
+    #         - 27017
+    
+    back:
+        container_name: "rubros-service"
+        restart: always
+        environment: 
+            - COLLECTION_MONGO=arbol_rubro
+            - DB_MONGO=test
+            - USER_MONGO=test
+            - PASS_MONGO=test
+            - HOST_MONGO=192.168.0.7
+            - PORT_MONGO=27016
+        build: .
+        ports: 
+            - 3000:3000
+        volumes: 
+            - .:/usr/src/app
+        # depends_on: 
+        #     - mongo
+        # links: 
+        #     - mongo
