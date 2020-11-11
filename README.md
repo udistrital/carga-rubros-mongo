@@ -37,8 +37,8 @@ El api esta desarrollada en un framework de javascript que usa typescript , para
     - CADENA_NIVEL6
     - DESC_NIVEL7
     - CADENA_NIVEL7
-    - DESC_NIVEL7
-    - CADENA_NIVEL7
+    - DESC_NIVEL8
+    - CADENA_NIVEL8
 
 
 ### Instalación
