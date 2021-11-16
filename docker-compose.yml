@@ -12,13 +12,7 @@ services:
     back:
         container_name: "rubros-service"
         restart: always
-        environment:
-            - COLLECTION_MONGO=arbol_rubro
-            - DB_MONGO=test
-            - USER_MONGO=test
-            - PASS_MONGO=test
-            - HOST_MONGO=192.168.0.7
-            - PORT_MONGO=27016
+        env_file: .develop.env
         build: .
         ports:
             - 3000:3000
