@@ -1,8 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { RubroMongo } from './interfaces/rubro-mongo.interface';
 import { CreateRubroMongoService } from './create-rubro-mongo/create-rubro-mongo.service';
-
-
+import excelToJson from 'convert-excel-to-json';
 
 @Injectable()
 export class RubrosService {
@@ -27,7 +26,6 @@ export class RubrosService {
 
     leerArchivo(archivo) {
         try {
-            const excelToJson = require('convert-excel-to-json');
             // console.log(archivo)
             const result = excelToJson({
                 source: archivo.buffer,
