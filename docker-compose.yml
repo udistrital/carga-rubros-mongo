@@ -3,22 +3,17 @@ version: '3'
 services:
     # mongo:
     #     image: mongo
-    #     container_name: mongo-service
+    #     env_file: .develop.env
     #     ports:
-    #         - 27017:27017
-    #     expose:
-    #         - 27017
+    #         - '27017:27017'
 
     back:
-        container_name: "rubros-service"
         restart: always
         env_file: .develop.env
         build: .
         ports:
-            - 3000:3000
+            - '3000:3000'
         volumes:
             - .:/usr/src/app
         # depends_on:
-        #     - mongo
-        # links:
         #     - mongo
