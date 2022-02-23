@@ -4,6 +4,10 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
+COPY package.json package-lock.json ./
+
+RUN npm install
+
 COPY . .
 
 ARG DB_MONGO
@@ -18,8 +22,7 @@ ARG HOST_MONGO
 
 ARG PORT_MONGO
 
-
-RUN npm install
+RUN npm run build
 
 CMD [ "npm", "run", "start:dev" ]
 
