@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { RubroMongo } from './interfaces/rubro-mongo.interface';
 import { CreateRubroMongoService } from './create-rubro-mongo/create-rubro-mongo.service';
-import excelToJson from 'convert-excel-to-json';
+import excelToJson = require("convert-excel-to-json");
 
 @Injectable()
 export class RubrosService {
@@ -9,12 +9,13 @@ export class RubrosService {
     constructor(private createRubroMongoService: CreateRubroMongoService) { }
 
     async cargarRubro(archivo) {
+        // console.log("archivo: ", archivo)
         if (archivo.originalname.includes('.xlsx')) {
             const name = archivo.originalname.split('.xlsx')[0]
             const jsonRubros = this.leerArchivo(archivo)[name];
-            console.log(jsonRubros.length)
+            // console.log("jsonRubros.length: ", jsonRubros.length)
             const jsonOrganizado = this.organizarArbol(jsonRubros)
-            console.log(jsonOrganizado.length)
+            // console.log("jsonOrganizado.length: ", jsonOrganizado.length)
             await this.ingresarRubros(jsonOrganizado);
             return { mensaje: 'rubros ingresados exitosamente en la colección: ' + process.env.COLLECTION_MONGO }
         } else {
@@ -30,16 +31,18 @@ export class RubrosService {
             const result = excelToJson({
                 source: archivo.buffer,
                 header: {
-                    rows: 1
+                    rows: 1,
                 },
                 columnToKey: {
-                    '*': '{{columnHeader}}'
-                }
-            })
+                    '*': '{{columnHeader}}',
+                },
+                sheetStubs: true,
+            });
             // console.log(result)
             return result
         } catch (error) {
-            throw new HttpException('ha ocurrido un error al leer el archivo', 500)
+            console.error(error)
+            throw new HttpException('Ha ocurrido un error al leer el archivo', 500)
         }
     }
 
@@ -81,7 +84,7 @@ export class RubrosService {
                     hijos = []
                     unidadEjecutora = `${nodoActual['CODIGO_UNIDAD_EJECUTORA']}`
                 } else {
-                    const arrayHijos = jsonRubros.filter(datoFiltro => datoFiltro[campoHijo].startsWith(padre))
+                    const arrayHijos = jsonRubros.filter(datoFiltro => String(datoFiltro[campoHijo]).startsWith(padre))
                     hijos = this.eliminarDuplicados(arrayHijos.map(data => data[campoHijo]))
                     unidadEjecutora = "1"
                 }
@@ -102,8 +105,8 @@ export class RubrosService {
             })
             return nodos;
         } catch (error) {
-            // console.log(error)
-            throw new HttpException('ha ocurrido un error al organizar padre e hijos del arbol', 500)
+            console.log(error)
+            throw new HttpException('Ha ocurrido un error al organizar padre e hijos del arbol 2', 500)
         }
     }
 

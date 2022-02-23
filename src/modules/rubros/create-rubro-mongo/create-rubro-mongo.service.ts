@@ -12,6 +12,5 @@ export class CreateRubroMongoService {
   async create(createRubroDto: CreateRubroDto): Promise<Rubros> {
     const createdRubro = new this.rubroModel(createRubroDto);
     return createdRubro.save();
-
   }
 }
