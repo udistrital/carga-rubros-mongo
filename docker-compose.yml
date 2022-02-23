@@ -1,19 +1,19 @@
 version: '3'
 
 services:
-    # mongo:
-    #     image: mongo
-    #     env_file: .develop.env
-    #     ports:
-    #         - '27017:27017'
+    mongo:
+        image: mongo
+        env_file: .develop.env
+        ports:
+            - '27017:27017'
 
     back:
-        restart: always
+        # restart: always
         env_file: .develop.env
         build: .
         ports:
             - '3000:3000'
         volumes:
             - .:/usr/src/app
-        # depends_on:
-        #     - mongo
+        depends_on:
+            - mongo
