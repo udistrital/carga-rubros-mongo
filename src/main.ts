@@ -7,8 +7,8 @@ async function bootstrap() {
   app.enableCors();
 
   const options = new DocumentBuilder()
-    .setTitle('Ingreso y mapeo de Rubros')
-    .setDescription('EL api realiza un mapeo de los datos de rubros de sicapital y los ingresa a mongo en su respectiva estrcutura')
+    .setTitle('Plan de Adquisiciones y Rubros')
+    .setDescription('El API realiza el ingreso de los rubros y los elementos correspondientes al plan de adquisiciones')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);

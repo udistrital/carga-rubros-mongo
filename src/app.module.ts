@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { PlanAdquisicionesModule } from './modules/plan-adquisiciones/plan-adquisiciones.module';
 import { PlanCuentasMongoController } from './controllers/plan-cuentas-mongo/plan-cuentas-mongo.controller';
+import { ApropiacionesModule } from './modules/apropiaciones/apropiaciones.module';
 
 const CONNECTION_STRING = `mongodb://${process.env.USER_MONGO}:${process.env.PASS_MONGO}@${process.env.HOST_MONGO}:${process.env.PORT_MONGO}/${process.env.DB_MONGO}?authSource=admin`;
 
@@ -15,6 +16,7 @@ const CONNECTION_STRING = `mongodb://${process.env.USER_MONGO}:${process.env.PAS
     RubrosModule,
     MongooseModule.forRoot(CONNECTION_STRING),
     PlanAdquisicionesModule,
+    ApropiacionesModule,
   ],
   controllers: [AppController, PlanCuentasMongoController],
   providers: [AppService],
