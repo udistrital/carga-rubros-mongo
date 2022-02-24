@@ -3,7 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express/multer/interceptors/fi
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { RubrosService } from './rubros.service';
 
-@ApiTags('rubros')
+@ApiTags('Rubros')
 @Controller('rubros')
 export class RubrosController {
 
