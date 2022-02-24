@@ -5,9 +5,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { InfoRubroHelperService } from './helpers/info-rubro-helper.service';
 
+@ApiTags('Apropiaciones')
 @Controller('apropiaciones')
 export class ApropiacionesController {
 
@@ -30,7 +31,6 @@ export class ApropiacionesController {
   })
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
     this.infoRubroHelper.uploadApropiaciones(file.buffer);
   }
 }

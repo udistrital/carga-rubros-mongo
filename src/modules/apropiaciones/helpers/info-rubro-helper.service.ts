@@ -6,8 +6,6 @@ import {
 } from '@nestjs/common';
 import * as superagent from 'superagent';
 import { ApropiacionesService } from '../services/apropiaciones.service';
-const indexVigencia = 1;
-const indexValor = 2;
 const estado = 'aprobada';
 
 import * as XLSX from 'xlsx';
@@ -40,7 +38,7 @@ export class InfoRubroHelperService {
                 _id: data.Codigo,
                 nodorubro: {
                   general: {
-                    vigencia: row[indexVigencia],
+                    vigencia: row['VIGENCIA'],
                     nombre: data.Codigo,
                     descripcion: data.Codigo,
                     activo: true,
@@ -51,8 +49,8 @@ export class InfoRubroHelperService {
                   bloqueado: data.Bloqueado,
                   apropiaciones: data.Apropiaciones,
                 },
-                valor_inicial: row[indexValor],
-                valor_actual: row[indexValor],
+                valor_inicial: row['VALOR'],
+                valor_actual: row['VALOR'],
                 movimientos: {},
                 productos: {},
                 estado: estado,
