@@ -16,7 +16,6 @@ export class PlanAdquisicionesRepositoryService {
   newPlanAdquisiciones(
     planAdquisicionesDTO: PlanAdquisicionesDTO,
   ): Promise<PlanAdquisicionesEntity> {
-    console.log("planAdquisicionesDTO: ", planAdquisicionesDTO)
     const newPlanAdquisiciones = this.planAdquisicionesMapper.dtoToEntity(
       planAdquisicionesDTO,
     );

@@ -14,6 +14,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlanAdquisicionesMapperService } from './mappers/plan-adquisiciones-mapper/plan-adquisiciones-mapper.service';
 import { PlanAdquisicionesRepositoryService } from './repositories/plan-adquisiciones-repository/plan-adquisiciones-repository.service';
 import { PlanAdquisicionesEntity } from './entities/planAdquisiciones.entity';
+import { MetaMapperService } from './mappers/meta-mapper/meta-mapper.service';
+import { MetaRepositoryService } from './repositories/meta-repositorie/meta-repository.service';
+import { MetaService } from './services/meta-service/meta.service';
+import { MetaEntity } from './entities/meta.entity';
+import { ActividadMapperService } from './mappers/actividad-mapper/actividad-mapper.service';
+import { ActividadRepositoryService } from './repositories/actividad-repository/actividad-repository.service';
+import { ActividadService } from './services/actividad/actividad.service';
+import { ActividadEntity } from './entities/actividad.entity';
 
 @Module({
   imports: [
@@ -32,7 +40,7 @@ import { PlanAdquisicionesEntity } from './entities/planAdquisiciones.entity';
       synchronize: !!process.env.DB_SYNC,
       schema: process.env.DB_SCHEMA
     }),
-    TypeOrmModule.forFeature([PlanAdquisicionesEntity])
+    TypeOrmModule.forFeature([PlanAdquisicionesEntity, MetaEntity, ActividadEntity])
   ],
   controllers: [ApropiacionesController, PlanAdquisicionesController],
   providers: [
@@ -42,6 +50,12 @@ import { PlanAdquisicionesEntity } from './entities/planAdquisiciones.entity';
     InfoPlanAdquisicionesHelperService,
     PlanAdquisicionesMapperService,
     PlanAdquisicionesRepositoryService,
+    MetaMapperService,
+    MetaRepositoryService,
+    MetaService,
+    ActividadMapperService,
+    ActividadRepositoryService,
+    ActividadService,
   ],
 })
 export class PlanAdquisicionesModule {}

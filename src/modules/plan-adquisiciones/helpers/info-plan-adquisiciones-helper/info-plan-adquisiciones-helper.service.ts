@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import * as XLSX from 'xlsx';
+import { ActividadService } from '../../services/actividad/actividad.service';
+import { MetaService } from '../../services/meta-service/meta.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
 
 @Injectable()
@@ -12,7 +14,11 @@ export class InfoPlanAdquisicionesHelperService {
   fecha_creacion = new Date();
   fecha_modificacion = new Date();
 
-  constructor(private planAdquisicionesService: PlanAdquisicionesService) {}
+  constructor(
+    private planAdquisicionesService: PlanAdquisicionesService,
+    private metaService: MetaService,
+    private actividadService: ActividadService,
+  ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
     const workBook = XLSX.read(filedata);
@@ -33,49 +39,85 @@ export class InfoPlanAdquisicionesHelperService {
 
     this.planAdquisicionesService.newPlanAdquisiciones(planAdquisicionesDTO);
 
-    dataSheetCalc.forEach(row => {
-      // console.log(row);
-      //   superagent
-      //     .get(
-      //       `${process.env.URLAPIPLANCUENTASMONGO}/arbol_rubro/${row['RUBRO']}`,
-      //     )
-      //     .end((err, res) => {
-      //       if (err) {
-      //         console.error(err.message);
-      //         throw new HttpException(err.message, 500);
-      //       } else {
-      //         const data = res.body.Body;
-      //         if (data) {
-      //           const rubroApropiacion = {
-      //             _id: data.Codigo,
-      //             nodorubro: {
-      //               general: {
-      //                 vigencia: row[indexVigencia],
-      //                 nombre: data.Codigo,
-      //                 descripcion: data.Codigo,
-      //                 activo: true,
-      //               },
-      //               hijos: data.Hijos,
-      //               padre: data.Padre,
-      //               unidad_ejecutora: '1',
-      //               bloqueado: data.Bloqueado,
-      //               apropiaciones: data.Apropiaciones,
-      //             },
-      //             valor_inicial: row[indexValor],
-      //             valor_actual: row[indexValor],
-      //             movimientos: {},
-      //             productos: {},
-      //             estado: estado,
-      //             padre: data.Padre,
-      //           };
+    // console.log(row);
+    let tempRubro = [];
+    const lineamiento_id = null;
 
-      //           this.apropiacionesService.create(rubroApropiacion);
-      //           HttpCode(HttpStatus.OK);
-      //         } else {
-      //           console.error(`No encontrado rubro: ${row['RUBRO']}`);
-      //         }
-      //       }
-      //     });
+    //INSERTAR METAS
+    dataSheetCalc.forEach((row, index) => {
+      if (dataSheetCalc[index + 1]) {
+        tempRubro.push(row);
+        if (
+          tempRubro[0]['RUBRO PRESUPUESTAL'] ==
+          dataSheetCalc[index + 1]['RUBRO PRESUPUESTAL']
+        ) {
+          tempRubro.push(row);
+        } else {
+          tempRubro.push(row);
+          const metasRubro = this.deleteRepetidos(tempRubro);
+          metasRubro.forEach(meta => {
+            const metaDTO = {
+              numero: meta['META'],
+              nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
+              fecha_creacion: this.fecha_creacion,
+              fecha_modificacion: this.fecha_modificacion,
+              activo: this.activo,
+              rubro: meta['RUBRO PRESUPUESTAL'],
+              lineamiento_id: lineamiento_id,
+            };
+
+            this.metaService.newMeta(metaDTO);
+          });
+          tempRubro = [];
+        }
+      } else {
+        tempRubro.push(row);
+        const metasRubro = this.deleteRepetidos(tempRubro);
+        metasRubro.forEach(meta => {
+          const metaDTO = {
+            numero: meta['META'],
+            nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
+            fecha_creacion: this.fecha_creacion,
+            fecha_modificacion: this.fecha_modificacion,
+            activo: this.activo,
+            rubro: meta['RUBRO PRESUPUESTAL'],
+            lineamiento_id: lineamiento_id,
+          };
+          this.metaService.newMeta(metaDTO);
+        });
+        tempRubro = [];
+      }
     });
+
+    dataSheetCalc.forEach((row, index) => {
+      const actividadDTO = {
+        numero: row['ACTIVIDAD'],
+        nombre: row['DESCRIPCIÓN'].substring(0, 249),
+        fecha_creacion: this.fecha_creacion,
+        fecha_modificacion: this.fecha_modificacion,
+        activo: this.activo,
+        meta_id: row['META'],
+      };
+
+      this.actividadService.newActividad(actividadDTO);
+    });
+  }
+
+  public deleteRepetidos(array: any[]): any[] {
+    const newArray = [];
+
+    array.forEach((item, index) => {
+      if (array[index + 1]) {
+        if (item['META'] != array[index + 1]['META']) {
+          newArray.push(item);
+        }
+      }
+    });
+
+    if (!newArray.includes(array[array.length - 1]['META'])) {
+      newArray.push(array[array.length - 1]);
+    }
+
+    return newArray;
   }
 }
