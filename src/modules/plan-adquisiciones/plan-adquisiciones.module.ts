@@ -1,12 +1,4 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ApropiacionesController } from '../apropiaciones/apropiaciones.controller';
-import { InfoRubroHelperService } from '../apropiaciones/helpers/info-rubro-helper.service';
-import { ApropiacionesService } from '../apropiaciones/services/apropiaciones.service';
-import {
-  RubroApropiacion,
-  RubroApropiacionSchema,
-} from '../apropiaciones/models/rubro-apropiacion.interface';
 import { PlanAdquisicionesController } from './controllers/plan-adquisiciones/plan-adquisiciones.controller';
 import { PlanAdquisicionesService } from './services/plan-adquisiciones/plan-adquisiciones.service';
 import { InfoPlanAdquisicionesHelperService } from './helpers/info-plan-adquisiciones-helper/info-plan-adquisiciones-helper.service';
@@ -22,13 +14,22 @@ import { ActividadMapperService } from './mappers/actividad-mapper/actividad-map
 import { ActividadRepositoryService } from './repositories/actividad-repository/actividad-repository.service';
 import { ActividadService } from './services/actividad/actividad.service';
 import { ActividadEntity } from './entities/actividad.entity';
+import { RegistroPlanAdquisicionesMapperService } from './mappers/registro-plan-adquisiciones-mapper/registro-plan-adquisiciones-mapper.service';
+import { RegistroPlanAdquisicionesRepositoryService } from './repositories/registro-plan-adquisiciones-repository/registro-plan-adquisiciones-repository.service';
+import { RegistroPlanAdquisicionesService } from './services/registro-plan-adquisiciones-service/registro-plan-adquisiciones-service.service';
+import { RegistroPlanAdquisicionesEntity } from './entities/registroPlanAdquisiciones.entity';
+import { ApropiacionesModule } from '../apropiaciones/apropiaciones.module';
+import { FuenteService } from '../apropiaciones/services/fuente/fuente.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { FuenteFinanciamiento, FuenteFinanciamientoSchema } from '../apropiaciones/models/fuente.interface';
+import { FuenteFinanciamientoVigencia } from '../apropiaciones/models/fuente-vigencia.interface';
+import { Producto, ProductoSchema } from '../apropiaciones/models/producto.interface';
+import { ProductoService } from '../apropiaciones/services/producto/producto.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: RubroApropiacion.name, schema: RubroApropiacionSchema },
-    ]),
     PlanAdquisicionesModule,
+    ApropiacionesModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -38,14 +39,22 @@ import { ActividadEntity } from './entities/actividad.entity';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: !!process.env.DB_SYNC,
-      schema: process.env.DB_SCHEMA
+      schema: process.env.DB_SCHEMA,
     }),
-    TypeOrmModule.forFeature([PlanAdquisicionesEntity, MetaEntity, ActividadEntity])
+    TypeOrmModule.forFeature([
+      PlanAdquisicionesEntity,
+      MetaEntity,
+      ActividadEntity,
+      RegistroPlanAdquisicionesEntity,
+    ]),
+    MongooseModule.forFeature([
+      { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
+      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoSchema },
+      { name: Producto.name, schema: ProductoSchema },
+    ]),
   ],
-  controllers: [ApropiacionesController, PlanAdquisicionesController],
+  controllers: [PlanAdquisicionesController],
   providers: [
-    ApropiacionesService,
-    InfoRubroHelperService,
     PlanAdquisicionesService,
     InfoPlanAdquisicionesHelperService,
     PlanAdquisicionesMapperService,
@@ -56,6 +65,11 @@ import { ActividadEntity } from './entities/actividad.entity';
     ActividadMapperService,
     ActividadRepositoryService,
     ActividadService,
+    RegistroPlanAdquisicionesMapperService,
+    RegistroPlanAdquisicionesRepositoryService,
+    RegistroPlanAdquisicionesService,
+    FuenteService,
+    ProductoService
   ],
 })
 export class PlanAdquisicionesModule {}
