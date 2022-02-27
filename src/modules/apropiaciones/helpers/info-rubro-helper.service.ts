@@ -58,7 +58,7 @@ export class InfoRubroHelperService {
               };
 
               this.apropiacionesService.create(rubroApropiacion);
-              HttpCode(HttpStatus.OK);
+              return HttpCode(HttpStatus.OK);
             } else {
               console.error(`No encontrado rubro: ${row['RUBRO']}`);
             }

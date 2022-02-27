@@ -12,7 +12,7 @@ import { Document } from 'mongoose';
 export class GeneralRubroApropiacion {
   @Prop()
   vigencia: number;
-
+  RubroApropiacionDocument
   @Prop()
   nombre: string;
 
