@@ -17,6 +17,7 @@ export class InfoPlanAdquisicionesHelperService {
   fecha_modificacion = new Date();
   tipofuente: null;
   tipoDocumento = 'RESOLUCION';
+  unidad_ejecutora = '1';
 
   constructor(
     private planAdquisicionesService: PlanAdquisicionesService,
@@ -43,9 +44,16 @@ export class InfoPlanAdquisicionesHelperService {
       publicado: this.publicado,
     };
 
-    this.planAdquisicionesService.newPlanAdquisiciones(planAdquisicionesDTO);
+    await this.planAdquisicionesService.newPlanAdquisiciones(
+      planAdquisicionesDTO,
+    );
 
-    // console.log(row);
+    await this.insertarMetas(dataSheetCalc);
+    await this.insertarActividades(dataSheetCalc);
+    await this.insertarFuentes(dataSheetCalc);
+  }
+
+  public insertarMetas(dataSheetCalc: any[]): void {
     let tempRubro = [];
     const lineamiento_id = null;
 
@@ -61,7 +69,7 @@ export class InfoPlanAdquisicionesHelperService {
         } else {
           tempRubro.push(row);
           const metasRubro = this.deleteRepetidos(tempRubro, 'META');
-          metasRubro.forEach(meta => {
+          metasRubro.forEach(async meta => {
             const metaDTO = {
               numero: meta['META'],
               nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
@@ -72,14 +80,14 @@ export class InfoPlanAdquisicionesHelperService {
               lineamiento_id: lineamiento_id,
             };
 
-            this.metaService.newMeta(metaDTO);
+            await this.metaService.newMeta(metaDTO);
           });
           tempRubro = [];
         }
       } else {
         tempRubro.push(row);
         const metasRubro = this.deleteRepetidos(tempRubro, 'META');
-        metasRubro.forEach(meta => {
+        metasRubro.forEach(async meta => {
           const metaDTO = {
             numero: meta['META'],
             nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
@@ -89,13 +97,15 @@ export class InfoPlanAdquisicionesHelperService {
             rubro: meta['RUBRO PRESUPUESTAL'],
             lineamiento_id: lineamiento_id,
           };
-          this.metaService.newMeta(metaDTO);
+          await this.metaService.newMeta(metaDTO);
         });
         tempRubro = [];
       }
     });
+  }
 
-    dataSheetCalc.forEach(row => {
+  public insertarActividades(dataSheetCalc: any[]): void {
+    dataSheetCalc.forEach(async row => {
       const actividadDTO = {
         numero: row['ACTIVIDAD'],
         nombre: row['DESCRIPCIÓN'].substring(0, 249),
@@ -105,9 +115,11 @@ export class InfoPlanAdquisicionesHelperService {
         meta_id: row['META'],
       };
 
-      this.actividadService.newActividad(actividadDTO);
+      await this.actividadService.newActividad(actividadDTO);
     });
+  }
 
+  public async insertarFuentes(dataSheetCalc: any[]): Promise<void> {
     const keysObject = Object.keys(dataSheetCalc[0]);
 
     const fuentesNames = keysObject.slice(
@@ -118,7 +130,7 @@ export class InfoPlanAdquisicionesHelperService {
     //Expresión regular para identificar el código de la fuente
     const re = '[a-zA-Z0-9\\-]{10}';
 
-    fuentesNames.forEach(fuenteName => {
+    fuentesNames.forEach(async fuenteName => {
       const tempFuente = {
         _id: fuenteName.match(re)[0],
         general: {
@@ -139,53 +151,123 @@ export class InfoPlanAdquisicionesHelperService {
         unidad_ejecutora: '',
       };
 
-      this.fuenteService.createFuenteFinanciamiento(tempFuente);
+      await this.fuenteService.createFuenteFinanciamiento(tempFuente);
     });
 
     const max = 9;
     const min = 0;
 
-    const numResolucion =
-      Math.floor(Math.random() * (max - min + 1) + min) * 1000000 +
-      Math.floor(Math.random() * (max - min + 1) + min) * 100000 +
-      Math.floor(Math.random() * (max - min + 1) + min) * 10000 +
-      Math.floor(Math.random() * (max - min + 1) + min) * 1000 +
-      Math.floor(Math.random() * (max - min + 1) + min) * 100 +
-      Math.floor(Math.random() * (max - min + 1) + min) * 10 +
-      Math.floor(Math.random() * (max - min + 1) + min) * 1;
+    let tempRubro = [];
 
-    const fuentesRubro = [];
+    const productos = await this.productoService.findAll();
 
-    let tempTotalRubros = [];
+    fuentesNames.forEach(async fuenteName => {
+      let acumTotalFuente = 0;
+      const fuentesRubro = [];
+      const numResolucion =
+        Math.floor(Math.random() * (max - min + 1) + min) * 1000000 +
+        Math.floor(Math.random() * (max - min + 1) + min) * 100000 +
+        Math.floor(Math.random() * (max - min + 1) + min) * 10000 +
+        Math.floor(Math.random() * (max - min + 1) + min) * 1000 +
+        Math.floor(Math.random() * (max - min + 1) + min) * 100 +
+        Math.floor(Math.random() * (max - min + 1) + min) * 10 +
+        Math.floor(Math.random() * (max - min + 1) + min) * 1;
 
-    dataSheetCalc.forEach(row => {
-      
-    })
+      dataSheetCalc.forEach(async (row, indexRow) => {
+        if (dataSheetCalc[indexRow + 1]) {
+          if (tempRubro.length == 0) {
+            tempRubro.push(row);
+          }
+          if (
+            tempRubro[tempRubro.length - 1]['RUBRO PRESUPUESTAL'] ==
+            dataSheetCalc[indexRow + 1]['RUBRO PRESUPUESTAL']
+          ) {
+            tempRubro.push(dataSheetCalc[indexRow + 1]);
+          } else {
+            let acumDependencia = 0;
+            tempRubro.forEach(sameRubro => {
+              Object.keys(sameRubro).forEach(key => {
+                if (
+                  key.startsWith(fuenteName.match(re)[0]) &&
+                  sameRubro[key] != 0
+                ) {
+                  acumDependencia = acumDependencia + sameRubro[key];
+                }
+              });
+            });
 
-    dataSheetCalc.forEach(row => {
-      let acumDependencia = 0;
-      fuentesNames.forEach(fuenteName => {
-        Object.keys(row).forEach(async key => {
-          if (key.startsWith(fuenteName.match(re)[0]) && row[key] != 0) {
-            acumDependencia = acumDependencia + row[key];
-            const productos = await this.productoService
-              .findAll()
-              .then(res => res);
+            acumTotalFuente = acumTotalFuente + acumDependencia;
+
+            if (acumDependencia > 0) {
+              const rubro = {
+                [tempRubro[0]['RUBRO PRESUPUESTAL']]: {
+                  Productos: productos,
+                  Dependencias: {
+                    Id: tempRubro[0]['RESPONSABLE'],
+                    Valor: acumDependencia,
+                  },
+                },
+              };
+              fuentesRubro.push(rubro);
+            }
+
+            tempRubro = [];
+          }
+        } else {
+          let acumDependencia = 0;
+
+          tempRubro.forEach(sameRubro => {
+            Object.keys(sameRubro).forEach(key => {
+              if (
+                key.startsWith(fuenteName.match(re)[0]) &&
+                sameRubro[key] != 0
+              ) {
+                acumDependencia = acumDependencia + sameRubro[key];
+              }
+            });
+          });
+
+          acumTotalFuente = acumTotalFuente + acumDependencia;
+
+          if (acumDependencia > 0) {
             const rubro = {
-              [row['RUBRO PRESUPUESTAL']]: {
+              [tempRubro[0]['RUBRO PRESUPUESTAL']]: {
                 Productos: productos,
+                Dependencias: {
+                  Id: tempRubro[0]['RESPONSABLE'],
+                  Valor: acumDependencia,
+                },
               },
             };
-
-            console.log(rubro, acumDependencia);
-
             fuentesRubro.push(rubro);
           }
-        });
-      });
-    });
 
-    // console.log(fuentesRubro);
+          tempRubro = [];
+        }
+      });
+
+      const tempFuente = {
+        _id: fuenteName.match(re)[0],
+        general: {
+          vigencia: this.vigencia,
+          nombre: fuenteName.split('VA-')[1],
+          descripcion: fuenteName.split('VA-')[1],
+          fechaCreacion: new Date(),
+          fechaModificacion: new Date(),
+          activo: this.activo,
+        },
+        tipofuente: this.tipofuente,
+        valor_inicial: acumTotalFuente,
+        valor_actual: acumTotalFuente,
+        estado: '',
+        rubros: fuentesRubro,
+        numeroDocumento: numResolucion.toString(),
+        tipoDocumento: this.tipoDocumento,
+        unidad_ejecutora: this.unidad_ejecutora,
+      };
+
+      await this.fuenteService.createFuenteFinanciamientoVigencia(tempFuente);
+    });
   }
 
   public deleteRepetidos(array: any[], property: string): any[] {

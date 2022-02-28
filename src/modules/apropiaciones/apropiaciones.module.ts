@@ -10,10 +10,9 @@ import {
 } from './models/rubro-apropiacion.interface';
 import { ApropiacionesService } from './services/apropiaciones.service';
 import { ProductoService } from './services/producto/producto.service';
-import { InfoFuenteService } from './helpers/info-fuente/info-fuente.service';
 import { FuenteService } from './services/fuente/fuente.service';
 import { FuenteFinanciamiento, FuenteFinanciamientoSchema } from './models/fuente.interface';
-import { FuenteFinanciamientoVigencia } from './models/fuente-vigencia.interface';
+import { FuenteFinanciamientoVigencia, FuenteFinanciamientoVigenciaSchema } from './models/fuente-vigencia.interface';
 
 @Module({
   imports: [
@@ -21,7 +20,7 @@ import { FuenteFinanciamientoVigencia } from './models/fuente-vigencia.interface
       { name: Producto.name, schema: ProductoSchema },
       { name: RubroApropiacion.name, schema: RubroApropiacionSchema },
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
-      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoSchema }
+      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoVigenciaSchema }
     ]),
     ApropiacionesModule,
   ],
@@ -31,7 +30,6 @@ import { FuenteFinanciamientoVigencia } from './models/fuente-vigencia.interface
     ProductoService,
     ApropiacionesService,
     InfoRubroHelperService,
-    InfoFuenteService,
     FuenteService,
   ],
 })

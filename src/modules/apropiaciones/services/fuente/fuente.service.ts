@@ -11,7 +11,7 @@ export class FuenteService {
     @InjectModel(FuenteFinanciamiento.name)
     private fuenteFinanciamientoModel: Model<FuenteFinanciamientoDocumento>,
     @InjectModel(FuenteFinanciamientoVigencia.name)
-    private fuenteFinanciamientoVigenciaModel: Model<FuenteFinanciamientoDocumento>
+    private fuenteFinanciamientoVigenciaModel: Model<FuenteFinanciamientoVigenciaDocumento>
   ) {}
 
   async createFuenteFinanciamiento(fuenteFinanciamientoDTO: FuenteFinanciamientoDTO): Promise<FuenteFinanciamientoDocumento> {
