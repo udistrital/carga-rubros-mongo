@@ -85,5 +85,7 @@ export class RegistroPlanAdquisicionesEntity {
       this.fuente_financiamiento = fuente_financiamiento;
       this.actividad_id = actividad_id;
       this.valor_actividad = valor_actividad;
+
+      console.log(`Se creó la entidad Registro Plan Adquisiciones para el Plan de Adquisiciones: ${this.plan_adquisiciones_id}`);
     }
   }

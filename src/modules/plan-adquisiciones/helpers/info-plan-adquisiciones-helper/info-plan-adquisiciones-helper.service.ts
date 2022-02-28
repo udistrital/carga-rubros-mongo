@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx';
 import { ActividadService } from '../../services/actividad/actividad.service';
 import { MetaService } from '../../services/meta-service/meta.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
+import { RegistroPlanAdquisicionesService } from '../../services/registro-plan-adquisiciones-service/registro-plan-adquisiciones-service.service';
 
 @Injectable()
 export class InfoPlanAdquisicionesHelperService {
@@ -18,6 +19,8 @@ export class InfoPlanAdquisicionesHelperService {
   tipofuente: null;
   tipoDocumento = 'RESOLUCION';
   unidad_ejecutora = '1';
+  area_funcional = 1;
+  centro_gestor = 230;
 
   constructor(
     private planAdquisicionesService: PlanAdquisicionesService,
@@ -25,6 +28,7 @@ export class InfoPlanAdquisicionesHelperService {
     private actividadService: ActividadService,
     private fuenteService: FuenteService,
     private productoService: ProductoService,
+    private registroPlanAdquisicionesService: RegistroPlanAdquisicionesService,
   ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
@@ -35,6 +39,8 @@ export class InfoPlanAdquisicionesHelperService {
 
     const dataSheetCalc = XLSX.utils.sheet_to_json(workBook.Sheets[sheet]);
 
+    const productos = await this.productoService.findAll();
+
     const planAdquisicionesDTO = {
       descripcion: this.descripcion,
       vigencia: this.vigencia,
@@ -44,13 +50,41 @@ export class InfoPlanAdquisicionesHelperService {
       publicado: this.publicado,
     };
 
-    await this.planAdquisicionesService.newPlanAdquisiciones(
-      planAdquisicionesDTO,
-    );
+    const idPlanAdquisicionesInserted = await this.planAdquisicionesService
+      .newPlanAdquisiciones(planAdquisicionesDTO)
+      .then(res => {
+        return res.id;
+      });
 
     await this.insertarMetas(dataSheetCalc);
     await this.insertarActividades(dataSheetCalc);
     await this.insertarFuentes(dataSheetCalc);
+
+    const fuentes = await this.fuenteService.findAll();
+
+    const temRegistroPlanAdquisiciones = {
+      area_funcional: this.area_funcional,
+      centro_gestor: this.centro_gestor,
+      fecha_creacion: this.fecha_creacion,
+      fecha_modificacion: this.fecha_modificacion,
+      responsable_id: dataSheetCalc[0]['RESPONSABLE'],
+      activo: this.activo,
+      meta_id: dataSheetCalc[0]['META'],
+      producto_id: productos[0]['_id'],
+      plan_adquisiciones_id: parseInt(idPlanAdquisicionesInserted),
+      rubro_id: dataSheetCalc[0]['RUBRO PRESUPUESTAL'],
+      fecha_estimada_inicio: new Date(
+        dataSheetCalc[0]['FECHA ESTIMADA INICIO'],
+      ),
+      fecha_estimada_fin: new Date(dataSheetCalc[0]['DURACION ESTIMADA']),
+      fuente_financiamiento: fuentes[0]['_id'],
+      actividad_id: dataSheetCalc[0]['ACTIVIDAD'],
+      valor_actividad: dataSheetCalc[0][`VALOR ASIGNADO ${this.vigencia}`],
+    };
+
+    this.registroPlanAdquisicionesService.newRegistroPlanAdquisiciones(
+      temRegistroPlanAdquisiciones,
+    );
   }
 
   public insertarMetas(dataSheetCalc: any[]): void {
@@ -151,7 +185,11 @@ export class InfoPlanAdquisicionesHelperService {
         unidad_ejecutora: '',
       };
 
-      await this.fuenteService.createFuenteFinanciamiento(tempFuente);
+      await this.fuenteService
+        .createFuenteFinanciamiento(tempFuente)
+        .catch(err => {
+          console.log(err);
+        });
     });
 
     const max = 9;
@@ -266,7 +304,11 @@ export class InfoPlanAdquisicionesHelperService {
         unidad_ejecutora: this.unidad_ejecutora,
       };
 
-      await this.fuenteService.createFuenteFinanciamientoVigencia(tempFuente);
+      await this.fuenteService
+        .createFuenteFinanciamientoVigencia(tempFuente)
+        .catch(err => {
+          console.log(err);
+        });
     });
   }
 

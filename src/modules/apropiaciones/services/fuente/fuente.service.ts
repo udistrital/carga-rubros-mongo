@@ -23,4 +23,11 @@ export class FuenteService {
     const createdFuente = new this.fuenteFinanciamientoVigenciaModel(fuenteFinanciamientoDTO);
     return createdFuente.save();
   }
+
+  async findAll(): Promise<FuenteFinanciamientoVigencia[]> {
+    return this.fuenteFinanciamientoVigenciaModel
+      .find()
+      .select('_id')
+      .exec();
+  }
 }
