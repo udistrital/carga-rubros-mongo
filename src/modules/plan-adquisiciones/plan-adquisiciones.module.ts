@@ -21,10 +21,23 @@ import { RegistroPlanAdquisicionesEntity } from './entities/registroPlanAdquisic
 import { ApropiacionesModule } from '../apropiaciones/apropiaciones.module';
 import { FuenteService } from '../apropiaciones/services/fuente/fuente.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { FuenteFinanciamiento, FuenteFinanciamientoSchema } from '../apropiaciones/models/fuente.interface';
-import { FuenteFinanciamientoVigencia, FuenteFinanciamientoVigenciaSchema } from '../apropiaciones/models/fuente-vigencia.interface';
-import { Producto, ProductoSchema } from '../apropiaciones/models/producto.interface';
+import {
+  FuenteFinanciamiento,
+  FuenteFinanciamientoSchema,
+} from '../apropiaciones/models/fuente.interface';
+import {
+  FuenteFinanciamientoVigencia,
+  FuenteFinanciamientoVigenciaSchema,
+} from '../apropiaciones/models/fuente-vigencia.interface';
+import {
+  Producto,
+  ProductoSchema,
+} from '../apropiaciones/models/producto.interface';
 import { ProductoService } from '../apropiaciones/services/producto/producto.service';
+import { ModalidadSeleccionMapperService } from './mappers/modalidad-seleccion-mapper/modalidad-seleccion-mapper.service';
+import { ModalidadSeleccionRepositoryService } from './repositories/modalidad-seleccion-repository/modalidad-seleccion-repository.service';
+import { ModalidadSeleccionService } from './services/modalidad-seleccion/modalidad-seleccion.service';
+import { ModalidadSeleccionEntity } from './entities/modalidadSeleccion.entity';
 
 @Module({
   imports: [
@@ -46,10 +59,14 @@ import { ProductoService } from '../apropiaciones/services/producto/producto.ser
       MetaEntity,
       ActividadEntity,
       RegistroPlanAdquisicionesEntity,
+      ModalidadSeleccionEntity,
     ]),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
-      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoVigenciaSchema },
+      {
+        name: FuenteFinanciamientoVigencia.name,
+        schema: FuenteFinanciamientoVigenciaSchema,
+      },
       { name: Producto.name, schema: ProductoSchema },
     ]),
   ],
@@ -69,7 +86,10 @@ import { ProductoService } from '../apropiaciones/services/producto/producto.ser
     RegistroPlanAdquisicionesRepositoryService,
     RegistroPlanAdquisicionesService,
     FuenteService,
-    ProductoService
+    ProductoService,
+    ModalidadSeleccionMapperService,
+    ModalidadSeleccionRepositoryService,
+    ModalidadSeleccionService,
   ],
 })
 export class PlanAdquisicionesModule {}

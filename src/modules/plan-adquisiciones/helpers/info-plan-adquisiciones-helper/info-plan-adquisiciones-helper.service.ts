@@ -5,6 +5,7 @@ import { ProductoService } from 'src/modules/apropiaciones/services/producto/pro
 import * as XLSX from 'xlsx';
 import { ActividadService } from '../../services/actividad/actividad.service';
 import { MetaService } from '../../services/meta-service/meta.service';
+import { ModalidadSeleccionService } from '../../services/modalidad-seleccion/modalidad-seleccion.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
 import { RegistroPlanAdquisicionesService } from '../../services/registro-plan-adquisiciones-service/registro-plan-adquisiciones-service.service';
 
@@ -29,6 +30,7 @@ export class InfoPlanAdquisicionesHelperService {
     private fuenteService: FuenteService,
     private productoService: ProductoService,
     private registroPlanAdquisicionesService: RegistroPlanAdquisicionesService,
+    private modalidadSeleccionService: ModalidadSeleccionService,
   ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
@@ -82,9 +84,33 @@ export class InfoPlanAdquisicionesHelperService {
       valor_actividad: dataSheetCalc[0][`VALOR ASIGNADO ${this.vigencia}`],
     };
 
-    this.registroPlanAdquisicionesService.newRegistroPlanAdquisiciones(
-      temRegistroPlanAdquisiciones,
+    const idRegistroPlanAdquisicionesInserted = await this.registroPlanAdquisicionesService
+      .newRegistroPlanAdquisiciones(temRegistroPlanAdquisiciones)
+      .then(res => {
+        return res.id;
+      });
+
+    const modalidadesNoRepeated = this.deleteRepetidosHash(
+      dataSheetCalc,
+      'MODALIDAD DE SELECCIÓN',
     );
+
+    console.log('modalidadesNoRepeated.length: ', modalidadesNoRepeated.length);
+    console.log("modalidadesNoRepeated: ", modalidadesNoRepeated)
+
+    modalidadesNoRepeated.forEach(async (modalidad) => {
+      const modalidadSeleccionDTO = {
+        id_modalidad_seleccion: modalidad['MODALIDAD DE SELECCIÓN'],
+        fecha_modificacion: new Date(),
+        activo: this.activo,
+        fecha_creacion: new Date(),
+        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted,
+      };
+
+      await this.modalidadSeleccionService.newModalidadSeleccion(
+        modalidadSeleccionDTO,
+      );
+    });
   }
 
   public insertarMetas(dataSheetCalc: any[]): void {
@@ -310,6 +336,17 @@ export class InfoPlanAdquisicionesHelperService {
           console.log(err);
         });
     });
+  }
+
+  public deleteRepetidosHash(array: any[], property: string): any[] {
+    const hash = {};
+    array = array.filter(function(current) {
+      const exists = !hash[current[property]];
+      hash[current[property]] = true;
+      return exists;
+    });
+
+    return array;
   }
 
   public deleteRepetidos(array: any[], property: string): any[] {
