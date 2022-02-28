@@ -22,7 +22,7 @@ import { ApropiacionesModule } from '../apropiaciones/apropiaciones.module';
 import { FuenteService } from '../apropiaciones/services/fuente/fuente.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FuenteFinanciamiento, FuenteFinanciamientoSchema } from '../apropiaciones/models/fuente.interface';
-import { FuenteFinanciamientoVigencia } from '../apropiaciones/models/fuente-vigencia.interface';
+import { FuenteFinanciamientoVigencia, FuenteFinanciamientoVigenciaSchema } from '../apropiaciones/models/fuente-vigencia.interface';
 import { Producto, ProductoSchema } from '../apropiaciones/models/producto.interface';
 import { ProductoService } from '../apropiaciones/services/producto/producto.service';
 
@@ -49,7 +49,7 @@ import { ProductoService } from '../apropiaciones/services/producto/producto.ser
     ]),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
-      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoSchema },
+      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoVigenciaSchema },
       { name: Producto.name, schema: ProductoSchema },
     ]),
   ],

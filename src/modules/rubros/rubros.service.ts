@@ -9,13 +9,10 @@ export class RubrosService {
     constructor(private createRubroMongoService: CreateRubroMongoService) { }
 
     async cargarRubro(archivo) {
-        // console.log("archivo: ", archivo)
         if (archivo.originalname.includes('.xlsx')) {
             const name = archivo.originalname.split('.xlsx')[0]
             const jsonRubros = this.leerArchivo(archivo)[name];
-            // console.log("jsonRubros.length: ", jsonRubros.length)
             const jsonOrganizado = this.organizarArbol(jsonRubros)
-            // console.log("jsonOrganizado.length: ", jsonOrganizado.length)
             await this.ingresarRubros(jsonOrganizado);
             return { mensaje: 'rubros ingresados exitosamente en la colección: ' + process.env.COLLECTION_MONGO }
         } else {
@@ -27,7 +24,6 @@ export class RubrosService {
 
     leerArchivo(archivo) {
         try {
-            // console.log(archivo)
             const result = excelToJson({
                 source: archivo.buffer,
                 header: {
@@ -38,7 +34,6 @@ export class RubrosService {
                 },
                 sheetStubs: true,
             });
-            // console.log(result)
             return result
         } catch (error) {
             console.error(error)
