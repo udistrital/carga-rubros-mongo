@@ -38,6 +38,10 @@ import { ModalidadSeleccionMapperService } from './mappers/modalidad-seleccion-m
 import { ModalidadSeleccionRepositoryService } from './repositories/modalidad-seleccion-repository/modalidad-seleccion-repository.service';
 import { ModalidadSeleccionService } from './services/modalidad-seleccion/modalidad-seleccion.service';
 import { ModalidadSeleccionEntity } from './entities/modalidadSeleccion.entity';
+import { CodigoArkaMapperService } from './mappers/codigo-arka-mapper/codigo-arka-mapper.service';
+import { CodigoArkaRepositoryService } from './repositories/codigo-arka-repository/codigo-arka-repository.service';
+import { CodigoArkaService } from './services/codigo-arka/codigo-arka.service';
+import { CodigoArkaEntity } from './entities/codigoArka.entity';
 
 @Module({
   imports: [
@@ -60,6 +64,7 @@ import { ModalidadSeleccionEntity } from './entities/modalidadSeleccion.entity';
       ActividadEntity,
       RegistroPlanAdquisicionesEntity,
       ModalidadSeleccionEntity,
+      CodigoArkaEntity,
     ]),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
@@ -90,6 +95,9 @@ import { ModalidadSeleccionEntity } from './entities/modalidadSeleccion.entity';
     ModalidadSeleccionMapperService,
     ModalidadSeleccionRepositoryService,
     ModalidadSeleccionService,
+    CodigoArkaMapperService,
+    CodigoArkaRepositoryService,
+    CodigoArkaService,
   ],
 })
 export class PlanAdquisicionesModule {}
