@@ -4,6 +4,7 @@ import { ProductoService } from 'src/modules/apropiaciones/services/producto/pro
 
 import * as XLSX from 'xlsx';
 import { ActividadService } from '../../services/actividad/actividad.service';
+import { CodigoArkaService } from '../../services/codigo-arka/codigo-arka.service';
 import { MetaService } from '../../services/meta-service/meta.service';
 import { ModalidadSeleccionService } from '../../services/modalidad-seleccion/modalidad-seleccion.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
@@ -31,6 +32,7 @@ export class InfoPlanAdquisicionesHelperService {
     private productoService: ProductoService,
     private registroPlanAdquisicionesService: RegistroPlanAdquisicionesService,
     private modalidadSeleccionService: ModalidadSeleccionService,
+    private codigoArkaService: CodigoArkaService,
   ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
@@ -90,27 +92,10 @@ export class InfoPlanAdquisicionesHelperService {
         return res.id;
       });
 
-    const modalidadesNoRepeated = this.deleteRepetidosHash(
+    this.insertarRegistroPlanAdquisiciones(
+      idRegistroPlanAdquisicionesInserted,
       dataSheetCalc,
-      'MODALIDAD DE SELECCIÓN',
     );
-
-    console.log('modalidadesNoRepeated.length: ', modalidadesNoRepeated.length);
-    console.log("modalidadesNoRepeated: ", modalidadesNoRepeated)
-
-    modalidadesNoRepeated.forEach(async (modalidad) => {
-      const modalidadSeleccionDTO = {
-        id_modalidad_seleccion: modalidad['MODALIDAD DE SELECCIÓN'],
-        fecha_modificacion: new Date(),
-        activo: this.activo,
-        fecha_creacion: new Date(),
-        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted,
-      };
-
-      await this.modalidadSeleccionService.newModalidadSeleccion(
-        modalidadSeleccionDTO,
-      );
-    });
   }
 
   public insertarMetas(dataSheetCalc: any[]): void {
@@ -336,6 +321,109 @@ export class InfoPlanAdquisicionesHelperService {
           console.log(err);
         });
     });
+  }
+
+  public async insertarRegistroPlanAdquisiciones(
+    idPlanAdquisicionesInserted: number,
+    dataSheetCalc: any[],
+  ): Promise<void> {
+    const productos = await this.productoService.findAll();
+    const fuentes = await this.fuenteService.findAll();
+    const rubrosNoRepeated = this.deleteRepetidosHash(
+      dataSheetCalc,
+      'RUBRO PRESUPUESTAL',
+    );
+
+    rubrosNoRepeated.forEach(async rubro => {
+      const rubrosTemp = [];
+      dataSheetCalc.forEach((row, index) => {
+        if (row['RUBRO PRESUPUESTAL'] === rubro['RUBRO PRESUPUESTAL']) {
+          rubrosTemp.push(row);
+        }
+      });
+
+      const temRegistroPlanAdquisiciones = {
+        area_funcional: this.area_funcional,
+        centro_gestor: this.centro_gestor,
+        fecha_creacion: new Date(),
+        fecha_modificacion: new Date(),
+        responsable_id: rubrosTemp[0]['RESPONSABLE'],
+        activo: this.activo,
+        meta_id: rubrosTemp[0]['META'],
+        producto_id: productos[0]['_id'],
+        plan_adquisiciones_id: idPlanAdquisicionesInserted,
+        rubro_id: rubrosTemp[0]['RUBRO PRESUPUESTAL'],
+        fecha_estimada_inicio: new Date(
+          Date.UTC(0, 0, rubrosTemp[0]['FECHA ESTIMADA INICIO'], -5),
+        ),
+        fecha_estimada_fin: new Date(
+          Date.UTC(0, 0, rubrosTemp[0]['DURACION ESTIMADA'], -5),
+        ),
+        fuente_financiamiento: fuentes[0]['_id'],
+        actividad_id: rubrosTemp[0]['ACTIVIDAD'],
+        valor_actividad: rubrosTemp[0][`VALOR ASIGNADO ${this.vigencia}`],
+      };
+
+      const idRegistroPlanAdquisicionesInserted = await this.registroPlanAdquisicionesService
+        .newRegistroPlanAdquisiciones(temRegistroPlanAdquisiciones)
+        .then(res => {
+          return res.id;
+        });
+
+      const modalidadSeleccionTemp = this.deleteRepetidosHash(
+        rubrosTemp,
+        'MODALIDAD DE SELECCIÓN',
+      );
+
+      this.insertarModalidadSeleccion(
+        modalidadSeleccionTemp,
+        idRegistroPlanAdquisicionesInserted,
+      );
+
+      rubrosTemp.forEach((rubroTemp) => {
+        const catalogoArkaTemp = String(rubroTemp['CODIGO ARKA']).split('\n');
+
+        this.insertarCodigoArka(catalogoArkaTemp, idRegistroPlanAdquisicionesInserted);
+      })
+    });
+  }
+
+  public insertarModalidadSeleccion(
+    modalidadesSeleccion: any[],
+    idRegistroPlanAdquisicionesInserted: number,
+  ): void {
+    modalidadesSeleccion.forEach(async modalidad => {
+      const modalidadSeleccionDTO = {
+        id_modalidad_seleccion: modalidad['MODALIDAD DE SELECCIÓN'],
+        fecha_modificacion: new Date(),
+        activo: this.activo,
+        fecha_creacion: new Date(),
+        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted,
+      };
+
+      await this.modalidadSeleccionService.newModalidadSeleccion(
+        modalidadSeleccionDTO,
+      );
+    });
+  }
+
+  public insertarCodigoArka(
+    codigoArka: any[],
+    idRegistroPlanAdquisicionesInserted: number,
+  ): void {
+    codigoArka.forEach(async (codigo) => {
+      const codigoWithoutSpaces = codigo.replace(/\s+/g, '');
+      const codigoArkaDTO = {
+        codigo_arka: codigoWithoutSpaces,
+        fecha_modificacion: new Date(),
+        activo: this.activo,
+        fecha_creacion: new Date(),
+        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted
+      }
+
+      await this.codigoArkaService.newCodigoArka(codigoArkaDTO);
+
+    })
   }
 
   public deleteRepetidosHash(array: any[], property: string): any[] {
