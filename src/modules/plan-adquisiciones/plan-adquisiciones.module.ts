@@ -7,7 +7,7 @@ import { PlanAdquisicionesMapperService } from './mappers/plan-adquisiciones-map
 import { PlanAdquisicionesRepositoryService } from './repositories/plan-adquisiciones-repository/plan-adquisiciones-repository.service';
 import { PlanAdquisicionesEntity } from './entities/planAdquisiciones.entity';
 import { MetaMapperService } from './mappers/meta-mapper/meta-mapper.service';
-import { MetaRepositoryService } from './repositories/meta-repositorie/meta-repository.service';
+import { MetaRepositoryService } from './repositories/meta-repository/meta-repository.service';
 import { MetaService } from './services/meta-service/meta.service';
 import { MetaEntity } from './entities/meta.entity';
 import { ActividadMapperService } from './mappers/actividad-mapper/actividad-mapper.service';
@@ -42,6 +42,10 @@ import { CodigoArkaMapperService } from './mappers/codigo-arka-mapper/codigo-ark
 import { CodigoArkaRepositoryService } from './repositories/codigo-arka-repository/codigo-arka-repository.service';
 import { CodigoArkaService } from './services/codigo-arka/codigo-arka.service';
 import { CodigoArkaEntity } from './entities/codigoArka.entity';
+import { PlanAdquisicionesActividadMapperService } from './mappers/plan-adquisiciones-actividad-mapper/plan-adquisiciones-actividad-mapper.service';
+import { PlanAdquisicionesActividadRepositoryService } from './repositories/plan-adquisiciones-actividad-repository/plan-adquisiciones-actividad-repository.service';
+import { PlanAdquisicionesActividadEntity } from './entities/planAdquisicionesActividad.entity';
+import { PlanAdquisicionesActividadService } from './services/plan-adquisiciones-actividad/plan-adquisiciones-actividad.service';
 
 @Module({
   imports: [
@@ -65,6 +69,7 @@ import { CodigoArkaEntity } from './entities/codigoArka.entity';
       RegistroPlanAdquisicionesEntity,
       ModalidadSeleccionEntity,
       CodigoArkaEntity,
+      PlanAdquisicionesActividadEntity
     ]),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
@@ -98,6 +103,9 @@ import { CodigoArkaEntity } from './entities/codigoArka.entity';
     CodigoArkaMapperService,
     CodigoArkaRepositoryService,
     CodigoArkaService,
+    PlanAdquisicionesActividadMapperService,
+    PlanAdquisicionesActividadRepositoryService,
+    PlanAdquisicionesActividadService
   ],
 })
 export class PlanAdquisicionesModule {}
