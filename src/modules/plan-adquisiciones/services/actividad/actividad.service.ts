@@ -6,13 +6,22 @@ import { ActividadRepositoryService } from '../../repositories/actividad-reposit
 
 @Injectable()
 export class ActividadService {
-    constructor(
-        private actividadRepository: ActividadRepositoryService,
-        private actividadMapper: ActividadMapperService,
-      ) {}
+  constructor(
+    private actividadRepository: ActividadRepositoryService,
+    private actividadMapper: ActividadMapperService,
+  ) {}
 
-      async newActividad(actividadDTO: ActividadDTO): Promise<ActividadDTO> {
-        const newActividad: ActividadEntity = await this.actividadRepository.newActividad(actividadDTO);
-        return this.actividadMapper.entityToDTO(newActividad);
-      }
+  async newActividad(actividadDTO: ActividadDTO): Promise<ActividadDTO> {
+    const newActividad: ActividadEntity = await this.actividadRepository.newActividad(
+      actividadDTO,
+    );
+    return this.actividadMapper.entityToDTO(newActividad);
+  }
+
+  async getAllActividades(): Promise<ActividadDTO[]> {
+    const actividades: ActividadEntity[] = await this.actividadRepository.getAllActividades();
+    return actividades.map(actividad =>
+      this.actividadMapper.entityToDTO(actividad),
+    );
+  }
 }

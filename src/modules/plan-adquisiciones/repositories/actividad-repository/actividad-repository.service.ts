@@ -17,4 +17,8 @@ export class ActividadRepositoryService {
     const newActividad = this.actividadMapper.dtoToEntity(actividadDTO);
     return this.actividadRepository.save(newActividad);
   }
+
+  getAllActividades(): Promise<ActividadEntity[]> {
+    return this.actividadRepository.find();
+  }
 }
