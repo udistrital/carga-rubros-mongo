@@ -6,7 +6,7 @@ export class PlanAdquisicionesActividadEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column('double precision')
     valor: number;
 
     @Column()
