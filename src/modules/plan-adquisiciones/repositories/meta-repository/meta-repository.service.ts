@@ -17,4 +17,8 @@ export class MetaRepositoryService {
     const newMeta = this.metaMapper.dtoToEntity(metaDTO);
     return this.metaRepository.save(newMeta);
   }
+
+  getAllMetas(): Promise<MetaEntity[]> {
+    return this.metaRepository.find();
+  }
 }

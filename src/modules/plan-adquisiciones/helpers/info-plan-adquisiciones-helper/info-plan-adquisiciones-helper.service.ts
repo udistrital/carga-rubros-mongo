@@ -7,6 +7,7 @@ import { ActividadService } from '../../services/actividad/actividad.service';
 import { CodigoArkaService } from '../../services/codigo-arka/codigo-arka.service';
 import { MetaService } from '../../services/meta-service/meta.service';
 import { ModalidadSeleccionService } from '../../services/modalidad-seleccion/modalidad-seleccion.service';
+import { PlanAdquisicionesActividadService } from '../../services/plan-adquisiciones-actividad/plan-adquisiciones-actividad.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
 import { RegistroPlanAdquisicionesService } from '../../services/registro-plan-adquisiciones-service/registro-plan-adquisiciones-service.service';
 
@@ -33,6 +34,7 @@ export class InfoPlanAdquisicionesHelperService {
     private registroPlanAdquisicionesService: RegistroPlanAdquisicionesService,
     private modalidadSeleccionService: ModalidadSeleccionService,
     private codigoArkaService: CodigoArkaService,
+    private planAdquisicionesActividadService: PlanAdquisicionesActividadService,
   ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
@@ -42,8 +44,6 @@ export class InfoPlanAdquisicionesHelperService {
     const sheet = workBookSheets[0];
 
     const dataSheetCalc = XLSX.utils.sheet_to_json(workBook.Sheets[sheet]);
-
-    const productos = await this.productoService.findAll();
 
     const planAdquisicionesDTO = {
       descripcion: this.descripcion,
@@ -60,92 +60,81 @@ export class InfoPlanAdquisicionesHelperService {
         return res.id;
       });
 
-    await this.insertarMetas(dataSheetCalc);
-    await this.insertarActividades(dataSheetCalc);
     await this.insertarFuentes(dataSheetCalc);
 
-    const fuentes = await this.fuenteService.findAll();
-
-    const temRegistroPlanAdquisiciones = {
-      area_funcional: this.area_funcional,
-      centro_gestor: this.centro_gestor,
-      fecha_creacion: this.fecha_creacion,
-      fecha_modificacion: this.fecha_modificacion,
-      responsable_id: dataSheetCalc[0]['RESPONSABLE'],
-      activo: this.activo,
-      meta_id: dataSheetCalc[0]['META'],
-      producto_id: productos[0]['_id'],
-      plan_adquisiciones_id: parseInt(idPlanAdquisicionesInserted),
-      rubro_id: dataSheetCalc[0]['RUBRO PRESUPUESTAL'],
-      fecha_estimada_inicio: new Date(
-        dataSheetCalc[0]['FECHA ESTIMADA INICIO'],
-      ),
-      fecha_estimada_fin: new Date(dataSheetCalc[0]['DURACION ESTIMADA']),
-      fuente_financiamiento: fuentes[0]['_id'],
-      actividad_id: dataSheetCalc[0]['ACTIVIDAD'],
-      valor_actividad: dataSheetCalc[0][`VALOR ASIGNADO ${this.vigencia}`],
-    };
-
-    const idRegistroPlanAdquisicionesInserted = await this.registroPlanAdquisicionesService
-      .newRegistroPlanAdquisiciones(temRegistroPlanAdquisiciones)
-      .then(res => {
-        return res.id;
-      });
-
     this.insertarRegistroPlanAdquisiciones(
-      idRegistroPlanAdquisicionesInserted,
+      idPlanAdquisicionesInserted,
       dataSheetCalc,
     );
   }
 
-  public insertarMetas(dataSheetCalc: any[]): void {
-    let tempRubro = [];
+  // public insertarMetas(dataSheetCalc: any[]): void {
+  //   let tempRubro = [];
+  //   const lineamiento_id = null;
+
+  //   //INSERTAR METAS
+  //   dataSheetCalc.forEach((row, index) => {
+  //     if (dataSheetCalc[index + 1]) {
+  //       tempRubro.push(row);
+  //       if (
+  //         tempRubro[0]['RUBRO PRESUPUESTAL'] ==
+  //         dataSheetCalc[index + 1]['RUBRO PRESUPUESTAL']
+  //       ) {
+  //         tempRubro.push(row);
+  //       } else {
+  //         tempRubro.push(row);
+  //         const metasRubro = this.deleteRepetidos(tempRubro, 'META');
+  //         metasRubro.forEach(async meta => {
+  //           const metaDTO = {
+  //             numero: meta['META'],
+  //             nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
+  //             fecha_creacion: this.fecha_creacion,
+  //             fecha_modificacion: this.fecha_modificacion,
+  //             activo: this.activo,
+  //             rubro: meta['RUBRO PRESUPUESTAL'],
+  //             lineamiento_id: lineamiento_id,
+  //           };
+
+  //           await this.metaService.newMeta(metaDTO);
+  //         });
+  //         tempRubro = [];
+  //       }
+  //     } else {
+  //       tempRubro.push(row);
+  //       const metasRubro = this.deleteRepetidos(tempRubro, 'META');
+  //       metasRubro.forEach(async meta => {
+  //         const metaDTO = {
+  //           numero: meta['META'],
+  //           nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
+  //           fecha_creacion: this.fecha_creacion,
+  //           fecha_modificacion: this.fecha_modificacion,
+  //           activo: this.activo,
+  //           rubro: meta['RUBRO PRESUPUESTAL'],
+  //           lineamiento_id: lineamiento_id,
+  //         };
+  //         await this.metaService.newMeta(metaDTO);
+  //       });
+  //       tempRubro = [];
+  //     }
+  //   });
+  // }
+
+  public insertarMetas(rubros: any[]): void {
     const lineamiento_id = null;
 
-    //INSERTAR METAS
-    dataSheetCalc.forEach((row, index) => {
-      if (dataSheetCalc[index + 1]) {
-        tempRubro.push(row);
-        if (
-          tempRubro[0]['RUBRO PRESUPUESTAL'] ==
-          dataSheetCalc[index + 1]['RUBRO PRESUPUESTAL']
-        ) {
-          tempRubro.push(row);
-        } else {
-          tempRubro.push(row);
-          const metasRubro = this.deleteRepetidos(tempRubro, 'META');
-          metasRubro.forEach(async meta => {
-            const metaDTO = {
-              numero: meta['META'],
-              nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
-              fecha_creacion: this.fecha_creacion,
-              fecha_modificacion: this.fecha_modificacion,
-              activo: this.activo,
-              rubro: meta['RUBRO PRESUPUESTAL'],
-              lineamiento_id: lineamiento_id,
-            };
+    const metasRubro = this.deleteRepetidos(rubros, 'META');
+    metasRubro.forEach(async meta => {
+      const metaDTO = {
+        numero: meta['META'],
+        nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
+        fecha_creacion: this.fecha_creacion,
+        fecha_modificacion: this.fecha_modificacion,
+        activo: this.activo,
+        rubro: meta['RUBRO PRESUPUESTAL'],
+        lineamiento_id: lineamiento_id,
+      };
 
-            await this.metaService.newMeta(metaDTO);
-          });
-          tempRubro = [];
-        }
-      } else {
-        tempRubro.push(row);
-        const metasRubro = this.deleteRepetidos(tempRubro, 'META');
-        metasRubro.forEach(async meta => {
-          const metaDTO = {
-            numero: meta['META'],
-            nombre: `Meta de rubro ${meta['RUBRO PRESUPUESTAL']}`,
-            fecha_creacion: this.fecha_creacion,
-            fecha_modificacion: this.fecha_modificacion,
-            activo: this.activo,
-            rubro: meta['RUBRO PRESUPUESTAL'],
-            lineamiento_id: lineamiento_id,
-          };
-          await this.metaService.newMeta(metaDTO);
-        });
-        tempRubro = [];
-      }
+      await this.metaService.newMeta(metaDTO);
     });
   }
 
@@ -324,11 +313,14 @@ export class InfoPlanAdquisicionesHelperService {
   }
 
   public async insertarRegistroPlanAdquisiciones(
-    idPlanAdquisicionesInserted: number,
+    idPlanAdquisicionesInserted: string,
     dataSheetCalc: any[],
   ): Promise<void> {
     const productos = await this.productoService.findAll();
     const fuentes = await this.fuenteService.findAll();
+    const metas = await this.metaService.getAllMetas();
+    const actividades = await this.actividadService.getAllActividades();
+
     const rubrosNoRepeated = this.deleteRepetidosHash(
       dataSheetCalc,
       'RUBRO PRESUPUESTAL',
@@ -351,7 +343,7 @@ export class InfoPlanAdquisicionesHelperService {
         activo: this.activo,
         meta_id: rubrosTemp[0]['META'],
         producto_id: productos[0]['_id'],
-        plan_adquisiciones_id: idPlanAdquisicionesInserted,
+        plan_adquisiciones_id: parseInt(idPlanAdquisicionesInserted),
         rubro_id: rubrosTemp[0]['RUBRO PRESUPUESTAL'],
         fecha_estimada_inicio: new Date(
           Date.UTC(0, 0, rubrosTemp[0]['FECHA ESTIMADA INICIO'], -5),
@@ -380,11 +372,15 @@ export class InfoPlanAdquisicionesHelperService {
         idRegistroPlanAdquisicionesInserted,
       );
 
-      rubrosTemp.forEach((rubroTemp) => {
+      rubrosTemp.forEach(rubroTemp => {
         const catalogoArkaTemp = String(rubroTemp['CODIGO ARKA']).split('\n');
+        this.insertarCodigoArka(
+          catalogoArkaTemp,
+          idRegistroPlanAdquisicionesInserted,
+        );
+      });
 
-        this.insertarCodigoArka(catalogoArkaTemp, idRegistroPlanAdquisicionesInserted);
-      })
+      this.insertarMetas(rubrosTemp);
     });
   }
 
@@ -411,19 +407,18 @@ export class InfoPlanAdquisicionesHelperService {
     codigoArka: any[],
     idRegistroPlanAdquisicionesInserted: number,
   ): void {
-    codigoArka.forEach(async (codigo) => {
+    codigoArka.forEach(async codigo => {
       const codigoWithoutSpaces = codigo.replace(/\s+/g, '');
       const codigoArkaDTO = {
         codigo_arka: codigoWithoutSpaces,
         fecha_modificacion: new Date(),
         activo: this.activo,
         fecha_creacion: new Date(),
-        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted
-      }
+        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted,
+      };
 
       await this.codigoArkaService.newCodigoArka(codigoArkaDTO);
-
-    })
+    });
   }
 
   public deleteRepetidosHash(array: any[], property: string): any[] {
