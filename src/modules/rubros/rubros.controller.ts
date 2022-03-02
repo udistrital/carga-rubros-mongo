@@ -30,6 +30,6 @@ export class RubrosController {
 
     // @Get('test')
     // prueba() {
-    //     console.log( process.env.COLLECTION_MONGO )
+    //     Logger.debug( process.env.COLLECTION_MONGO )
     // }
 }

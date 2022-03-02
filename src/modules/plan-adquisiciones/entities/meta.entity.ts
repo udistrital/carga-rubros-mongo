@@ -1,3 +1,4 @@
+import { Logger } from "@nestjs/common";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('Meta')
@@ -46,6 +47,6 @@ export class MetaEntity {
         this.rubro = rubro;
         this.lineamiento_id = lineamiento_id;
 
-        console.log(`Se creó la entidad Meta: ${this.nombre}`);
+        Logger.log(`Se creó la entidad Meta: ${this.nombre}`);
     }
 }

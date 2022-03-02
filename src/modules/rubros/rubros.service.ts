@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { RubroMongo } from './interfaces/rubro-mongo.interface';
 import { CreateRubroMongoService } from './create-rubro-mongo/create-rubro-mongo.service';
 import excelToJson = require("convert-excel-to-json");
@@ -36,7 +36,7 @@ export class RubrosService {
             });
             return result
         } catch (error) {
-            console.error(error)
+            Logger.error(error)
             throw new HttpException('Ha ocurrido un error al leer el archivo', 500)
         }
     }
@@ -100,7 +100,7 @@ export class RubrosService {
             })
             return nodos;
         } catch (error) {
-            console.log(error)
+            Logger.log(error)
             throw new HttpException('Ha ocurrido un error al organizar padre e hijos del arbol 2', 500)
         }
     }
