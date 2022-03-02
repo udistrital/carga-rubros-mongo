@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('Actividad')
@@ -40,6 +41,6 @@ export class ActividadEntity {
     this.activo = activo;
     this.meta_id = meta_id;
 
-    console.log(`Se creó la entidad Actividad: ${this.nombre}`);
+    Logger.log(`Se creó la entidad Actividad: ${this.nombre}`);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { FuenteService } from 'src/modules/apropiaciones/services/fuente/fuente.service';
 import { ProductoService } from 'src/modules/apropiaciones/services/producto/producto.service';
 
@@ -199,7 +199,7 @@ export class InfoPlanAdquisicionesHelperService {
       await this.fuenteService
         .createFuenteFinanciamiento(tempFuente)
         .catch(err => {
-          console.log(err);
+          Logger.log(err);
         });
     });
 
@@ -318,7 +318,7 @@ export class InfoPlanAdquisicionesHelperService {
       await this.fuenteService
         .createFuenteFinanciamientoVigencia(tempFuente)
         .catch(err => {
-          console.log(err);
+          Logger.log(err);
         });
     });
   }

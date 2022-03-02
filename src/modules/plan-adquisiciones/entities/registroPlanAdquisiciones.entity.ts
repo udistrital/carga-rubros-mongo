@@ -1,3 +1,4 @@
+import { Logger } from "@nestjs/common";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('Registro_plan_adquisiciones')
@@ -86,6 +87,6 @@ export class RegistroPlanAdquisicionesEntity {
       this.actividad_id = actividad_id;
       this.valor_actividad = valor_actividad;
 
-      console.log(`Se creó la entidad Registro Plan Adquisiciones para el Plan de Adquisiciones: ${this.plan_adquisiciones_id}`);
+      Logger.log(`Se creó la entidad Registro Plan Adquisiciones para el Plan de Adquisiciones: ${this.plan_adquisiciones_id}`);
     }
   }

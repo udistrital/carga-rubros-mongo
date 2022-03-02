@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('Registro_plan_adquisiciones-Codigo_arka')
@@ -35,6 +36,6 @@ export class CodigoArkaEntity {
     this.fecha_creacion = fecha_creacion;
     this.registro_plan_adquisiciones_id = registro_plan_adquisiciones_id;
 
-    console.log(`Se creó la entidad Registro Plan Adquisiciones Arka para el Registro Plan Adquisiciones: ${this.registro_plan_adquisiciones_id}`);
+    Logger.log(`Se creó la entidad Registro Plan Adquisiciones Arka para el Registro Plan Adquisiciones: ${this.registro_plan_adquisiciones_id}`);
   }
 }

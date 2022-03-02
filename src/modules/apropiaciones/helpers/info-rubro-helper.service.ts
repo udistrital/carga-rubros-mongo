@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import * as superagent from 'superagent';
 import { ApropiacionesService } from '../services/apropiaciones.service';
@@ -29,7 +30,7 @@ export class InfoRubroHelperService {
         )
         .end((err, res) => {
           if (err) {
-            console.error(err.message);
+            Logger.error(err.message);
             throw new HttpException(err.message, 500);
           } else {
             const data = res.body.Body;
@@ -60,7 +61,7 @@ export class InfoRubroHelperService {
               this.apropiacionesService.create(rubroApropiacion);
               return HttpCode(HttpStatus.OK);
             } else {
-              console.error(`No encontrado rubro: ${row['RUBRO']}`);
+              Logger.error(`No encontrado rubro: ${row['RUBRO']}`);
             }
           }
         });
