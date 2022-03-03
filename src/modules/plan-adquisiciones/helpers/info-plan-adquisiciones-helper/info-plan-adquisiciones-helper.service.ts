@@ -10,7 +10,9 @@ import { ModalidadSeleccionService } from '../../services/modalidad-seleccion/mo
 import { PlanAdquisicionesActividadService } from '../../services/plan-adquisiciones-actividad/plan-adquisiciones-actividad.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
 import { RegistroInversionActividadFuenteService } from '../../services/registro-inversion-actividad-fuente/registro-inversion-actividad-fuente.service';
+import { RegistroMetasAsociadasService } from '../../services/registro-metas-asociadas/registro-metas-asociadas.service';
 import { RegistroPlanAdquisicionesService } from '../../services/registro-plan-adquisiciones-service/registro-plan-adquisiciones-service.service';
+import { RegistroProductosAsociadosService } from '../../services/registro-productos-asociados/registro-productos-asociados.service';
 
 @Injectable()
 export class InfoPlanAdquisicionesHelperService {
@@ -37,6 +39,8 @@ export class InfoPlanAdquisicionesHelperService {
     private codigoArkaService: CodigoArkaService,
     private planAdquisicionesActividadService: PlanAdquisicionesActividadService,
     private registroInversionActividadFuenteService: RegistroInversionActividadFuenteService,
+    private registroProductosAsociadosService: RegistroProductosAsociadosService,
+    private registroMetasAsociadasService: RegistroMetasAsociadasService,
   ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
@@ -91,6 +95,18 @@ export class InfoPlanAdquisicionesHelperService {
       const idMetaInserted = await this.metaService
         .newMeta(metaDTO)
         .then(res => res.id);
+
+      const registroMetasAsociadasDTO = {
+        fecha_modificacion: new Date(),
+        activo: this.activo,
+        fecha_creacion: new Date(),
+        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted,
+        meta_id: idMetaInserted,
+      };
+
+      await this.registroMetasAsociadasService.newRegistroMetasAsociadas(
+        registroMetasAsociadasDTO,
+      );
 
       this.insertarActividades(
         meta['META'],
@@ -413,6 +429,30 @@ export class InfoPlanAdquisicionesHelperService {
       });
 
       this.insertarMetas(rubrosTemp, idRegistroPlanAdquisicionesInserted);
+      this.insertarRegistroProductosAsociados(
+        productos,
+        idRegistroPlanAdquisicionesInserted,
+      );
+    });
+  }
+
+  public insertarRegistroProductosAsociados(
+    productos: any[],
+    idRegistroPlanAdquisicionesInserted: number,
+  ): void {
+    productos.forEach(async producto => {
+      const productoTemp = {
+        producto_asociado_id: producto['_id'],
+        fecha_modificacion: new Date(),
+        activo: this.activo,
+        fecha_creacion: new Date(),
+        registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted,
+        porcentaje_distribucion: Math.floor(100 / productos.length),
+      };
+
+      await this.registroProductosAsociadosService.newRegistroProductosAsociados(
+        productoTemp,
+      );
     });
   }
 

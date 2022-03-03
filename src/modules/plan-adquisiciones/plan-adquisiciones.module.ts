@@ -50,6 +50,14 @@ import { RegistroInversionActividadFuenteMapperService } from './mappers/registr
 import { RegistroInversionActividadFuenteRepositoryService } from './repositories/registro-inversion-actividad-fuente-repository/registro-inversion-actividad-fuente-repository.service';
 import { RegistroInversionActividadFuenteService } from './services/registro-inversion-actividad-fuente/registro-inversion-actividad-fuente.service';
 import { RegistroInversionActividadFuenteEntity } from './entities/registroInversionActividadFuente.entity';
+import { RegistroProductosAsociadosMapperService } from './mappers/registro-productos-asociados-mapper/registro-productos-asociados-mapper.service';
+import { RegistroProductosAsociadosRepositoryService } from './repositories/registro-productos-asociados-repository/registro-productos-asociados-repository.service';
+import { RegistroProductosAsociadosService } from './services/registro-productos-asociados/registro-productos-asociados.service';
+import { RegistroProductosAsociadosEntity } from './entities/registroProductosAsociados.entity';
+import { RegistroMetasAsociadasMapperService } from './mappers/registro-metas-asociadas-mapper/registro-metas-asociadas-mapper.service';
+import { RegistroMetasAsociadasRepositoryService } from './repositories/registro-metas-asociadas-repository/registro-metas-asociadas-repository.service';
+import { RegistroMetasAsociadasService } from './services/registro-metas-asociadas/registro-metas-asociadas.service';
+import { RegistroMetasAsociadasEntity } from './entities/registroMetasAsociadas.entity';
 
 @Module({
   imports: [
@@ -74,7 +82,9 @@ import { RegistroInversionActividadFuenteEntity } from './entities/registroInver
       ModalidadSeleccionEntity,
       CodigoArkaEntity,
       PlanAdquisicionesActividadEntity,
-      RegistroInversionActividadFuenteEntity
+      RegistroInversionActividadFuenteEntity,
+      RegistroProductosAsociadosEntity,
+      RegistroMetasAsociadasEntity
     ]),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
@@ -114,6 +124,12 @@ import { RegistroInversionActividadFuenteEntity } from './entities/registroInver
     RegistroInversionActividadFuenteMapperService,
     RegistroInversionActividadFuenteRepositoryService,
     RegistroInversionActividadFuenteService,
+    RegistroProductosAsociadosMapperService,
+    RegistroProductosAsociadosRepositoryService,
+    RegistroProductosAsociadosService,
+    RegistroMetasAsociadasMapperService,
+    RegistroMetasAsociadasRepositoryService,
+    RegistroMetasAsociadasService,
   ],
 })
 export class PlanAdquisicionesModule {}
