@@ -9,6 +9,7 @@ import { MetaService } from '../../services/meta-service/meta.service';
 import { ModalidadSeleccionService } from '../../services/modalidad-seleccion/modalidad-seleccion.service';
 import { PlanAdquisicionesActividadService } from '../../services/plan-adquisiciones-actividad/plan-adquisiciones-actividad.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
+import { RegistroInversionActividadFuenteService } from '../../services/registro-inversion-actividad-fuente/registro-inversion-actividad-fuente.service';
 import { RegistroPlanAdquisicionesService } from '../../services/registro-plan-adquisiciones-service/registro-plan-adquisiciones-service.service';
 
 @Injectable()
@@ -35,6 +36,7 @@ export class InfoPlanAdquisicionesHelperService {
     private modalidadSeleccionService: ModalidadSeleccionService,
     private codigoArkaService: CodigoArkaService,
     private planAdquisicionesActividadService: PlanAdquisicionesActividadService,
+    private registroInversionActividadFuenteService: RegistroInversionActividadFuenteService,
   ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
@@ -143,9 +145,46 @@ export class InfoPlanAdquisicionesHelperService {
       registro_plan_adquisiciones_id: idRegistroPlanAdquisicionesInserted,
     };
 
-    await this.planAdquisicionesActividadService.newPlanAdquisicionesActividad(
-      tempRegistroPlanAdquisicionesActividad,
+    const idPlanAdquisicionActividadInserted = await this.planAdquisicionesActividadService
+      .newPlanAdquisicionesActividad(tempRegistroPlanAdquisicionesActividad)
+      .then(res => res.id);
+
+    this.insertarRegistroInvercionActividadFuente(
+      idPlanAdquisicionActividadInserted,
+      actividad,
     );
+  }
+
+  public insertarRegistroInvercionActividadFuente(
+    idPlanAdquisicionActividadInserted: number,
+    actividad: any,
+  ): void {
+    const keysObject = Object.keys(actividad);
+
+    const fuentesNames = keysObject.slice(
+      -1 *
+        (keysObject.length - keysObject.indexOf('FUENTE DE LOS RECURSOS') - 1),
+    );
+
+    //Expresión regular para identificar el código de la fuente
+    const re = '[a-zA-Z0-9\\-]{10}';
+
+    fuentesNames.forEach(async fuenteName => {
+      if (actividad[fuenteName] != 0) {
+        const tempRegistroInversionActividadFuente = {
+          fuente_financiamiento_id: fuenteName.match(re)[0],
+          valor_asignado: actividad[fuenteName],
+          fecha_modificacion: new Date(),
+          activo: this.activo,
+          fecha_creacion: new Date(),
+          registro_plan_adquisiciones_actividad_id: idPlanAdquisicionActividadInserted,
+        };
+
+        await this.registroInversionActividadFuenteService.newRegistroInversionActividadFuente(
+          tempRegistroInversionActividadFuente,
+        );
+      }
+    });
   }
 
   public async insertarFuentes(dataSheetCalc: any[]): Promise<void> {

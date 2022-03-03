@@ -46,6 +46,10 @@ import { PlanAdquisicionesActividadMapperService } from './mappers/plan-adquisic
 import { PlanAdquisicionesActividadRepositoryService } from './repositories/plan-adquisiciones-actividad-repository/plan-adquisiciones-actividad-repository.service';
 import { PlanAdquisicionesActividadEntity } from './entities/planAdquisicionesActividad.entity';
 import { PlanAdquisicionesActividadService } from './services/plan-adquisiciones-actividad/plan-adquisiciones-actividad.service';
+import { RegistroInversionActividadFuenteMapperService } from './mappers/registro-inversion-actividad-fuente-mapper/registro-inversion-actividad-fuente-mapper.service';
+import { RegistroInversionActividadFuenteRepositoryService } from './repositories/registro-inversion-actividad-fuente-repository/registro-inversion-actividad-fuente-repository.service';
+import { RegistroInversionActividadFuenteService } from './services/registro-inversion-actividad-fuente/registro-inversion-actividad-fuente.service';
+import { RegistroInversionActividadFuenteEntity } from './entities/registroInversionActividadFuente.entity';
 
 @Module({
   imports: [
@@ -69,7 +73,8 @@ import { PlanAdquisicionesActividadService } from './services/plan-adquisiciones
       RegistroPlanAdquisicionesEntity,
       ModalidadSeleccionEntity,
       CodigoArkaEntity,
-      PlanAdquisicionesActividadEntity
+      PlanAdquisicionesActividadEntity,
+      RegistroInversionActividadFuenteEntity
     ]),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
@@ -105,7 +110,10 @@ import { PlanAdquisicionesActividadService } from './services/plan-adquisiciones
     CodigoArkaService,
     PlanAdquisicionesActividadMapperService,
     PlanAdquisicionesActividadRepositoryService,
-    PlanAdquisicionesActividadService
+    PlanAdquisicionesActividadService,
+    RegistroInversionActividadFuenteMapperService,
+    RegistroInversionActividadFuenteRepositoryService,
+    RegistroInversionActividadFuenteService,
   ],
 })
 export class PlanAdquisicionesModule {}
