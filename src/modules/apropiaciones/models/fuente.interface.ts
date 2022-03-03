@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class GeneralFuenteFinanciamiento {
+class GeneralFuenteFinanciamiento {
   @Prop()
   vigencia: number;
 
@@ -22,13 +22,13 @@ export class GeneralFuenteFinanciamiento {
   activo: boolean;
 }
 
-export type FuenteFinanciamientoDocumento = FuenteFinanciamiento & Document;
+type FuenteFinanciamientoDocumento = FuenteFinanciamiento & Document;
 
 @Schema({
   collection: 'fuente_financiamiento',
   versionKey: false,
 })
-export class FuenteFinanciamiento {
+class FuenteFinanciamiento {
   @Prop()
   _id: string;
 
@@ -60,6 +60,13 @@ export class FuenteFinanciamiento {
   unidad_ejecutora: string;
 }
 
-export const FuenteFinanciamientoSchema = SchemaFactory.createForClass(
+const FuenteFinanciamientoSchema = SchemaFactory.createForClass(
   FuenteFinanciamiento,
 );
+
+export {
+  GeneralFuenteFinanciamiento,
+  FuenteFinanciamientoDocumento,
+  FuenteFinanciamiento,
+  FuenteFinanciamientoSchema,
+};

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class GeneralProducto {
+class GeneralProducto {
   @Prop({ default: 0 })
   vigencia: number;
 
@@ -22,13 +22,13 @@ export class GeneralProducto {
   activo: boolean;
 }
 
-export type ProductoDocument = Producto & Document;
+type ProductoDocument = Producto & Document;
 
 @Schema({
   collection: 'productos',
   versionKey: false,
 })
-export class Producto {
+class Producto {
   @Prop()
   general: GeneralProducto;
 
@@ -36,4 +36,6 @@ export class Producto {
   codigo: string;
 }
 
-export const ProductoSchema = SchemaFactory.createForClass(Producto);
+const ProductoSchema = SchemaFactory.createForClass(Producto);
+
+export { GeneralProducto, ProductoDocument, Producto, ProductoSchema };

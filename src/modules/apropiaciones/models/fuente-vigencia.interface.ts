@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 const vigencia = 2022;
 
 @Schema()
-export class GeneralFuenteFinanciamiento {
+class GeneralFuenteFinanciamiento {
   @Prop()
   vigencia: number;
 
@@ -23,13 +23,14 @@ export class GeneralFuenteFinanciamiento {
   activo: boolean;
 }
 
-export type FuenteFinanciamientoVigenciaDocumento = FuenteFinanciamientoVigencia & Document;
+type FuenteFinanciamientoVigenciaDocumento = FuenteFinanciamientoVigencia &
+  Document;
 
 @Schema({
   collection: `fuente_financiamiento_${vigencia}_1`,
   versionKey: false,
 })
-export class FuenteFinanciamientoVigencia {
+class FuenteFinanciamientoVigencia {
   @Prop()
   _id: string;
 
@@ -61,7 +62,13 @@ export class FuenteFinanciamientoVigencia {
   unidad_ejecutora: string;
 }
 
-export const FuenteFinanciamientoVigenciaSchema = SchemaFactory.createForClass(
-    FuenteFinanciamientoVigencia,
+const FuenteFinanciamientoVigenciaSchema = SchemaFactory.createForClass(
+  FuenteFinanciamientoVigencia,
 );
 
+export {
+  GeneralFuenteFinanciamiento,
+  FuenteFinanciamientoVigenciaDocumento,
+  FuenteFinanciamientoVigencia,
+  FuenteFinanciamientoVigenciaSchema,
+};

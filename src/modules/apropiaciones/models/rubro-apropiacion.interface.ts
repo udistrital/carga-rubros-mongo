@@ -9,10 +9,10 @@ import { Document } from 'mongoose';
   versionKey: false,
   _id: false,
 })
-export class GeneralRubroApropiacion {
+class GeneralRubroApropiacion {
   @Prop()
   vigencia: number;
-  RubroApropiacionDocument
+  RubroApropiacionDocument;
   @Prop()
   nombre: string;
 
@@ -23,24 +23,22 @@ export class GeneralRubroApropiacion {
   activo: boolean;
 }
 
-@Schema(
-  {
-    versionKey: false,
-    _id: false,
-  }
-)
-export class NodoRubroApropiacion {
+@Schema({
+  versionKey: false,
+  _id: false,
+})
+class NodoRubroApropiacion {
   @Prop()
   general: GeneralRubroApropiacion;
 
-  @Prop({ default:[] })
+  @Prop({ default: [] })
   hijos: any[];
 
   @Prop({ default: '' })
   padre: string;
 
   @Prop({ default: '1' })
-  unidad_ejecutora: string
+  unidad_ejecutora: string;
 
   @Prop({ default: false })
   bloqueado: boolean;
@@ -49,36 +47,30 @@ export class NodoRubroApropiacion {
   apropiaciones: boolean;
 }
 
-@Schema(
-  {
-    versionKey: false,
-    _id: false,
-  }
-)
-export class Movimientos { }
+@Schema({
+  versionKey: false,
+  _id: false,
+})
+class Movimientos {}
 
-@Schema(
-  {
-    versionKey: false,
-    _id: false,
-  }
-)
-export class Productos { }
+@Schema({
+  versionKey: false,
+  _id: false,
+})
+class Productos {}
 
-export type RubroApropiacionDocument = RubroApropiacion & Document;
+type RubroApropiacionDocument = RubroApropiacion & Document;
 
-@Schema(
-  {
-    collection: 'arbol_rubro_apropiacion_2022_1',
-    versionKey: false,
-  }
-)
-export class RubroApropiacion {
+@Schema({
+  collection: 'arbol_rubro_apropiacion_2022_1',
+  versionKey: false,
+})
+class RubroApropiacion {
   @Prop({ unique: true })
   _id: string;
 
   @Prop()
-  nodorubro: NodoRubroApropiacion
+  nodorubro: NodoRubroApropiacion;
 
   @Prop({ default: 0 })
   valor_inicial: number;
@@ -105,6 +97,14 @@ export class RubroApropiacion {
   'txn-queue': any[];
 }
 
-export const RubroApropiacionSchema = SchemaFactory.createForClass(RubroApropiacion);
+const RubroApropiacionSchema = SchemaFactory.createForClass(RubroApropiacion);
 
-
+export {
+  GeneralRubroApropiacion,
+  NodoRubroApropiacion,
+  Movimientos,
+  Productos,
+  RubroApropiacionDocument,
+  RubroApropiacion,
+  RubroApropiacionSchema,
+};

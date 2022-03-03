@@ -242,7 +242,7 @@ export class InfoPlanAdquisicionesHelperService {
         });
     });
 
-    const max = 9;
+    const max = 99999;
     const min = 0;
 
     let tempRubro = [];
@@ -252,14 +252,7 @@ export class InfoPlanAdquisicionesHelperService {
     fuentesNames.forEach(async fuenteName => {
       let acumTotalFuente = 0;
       const fuentesRubro = [];
-      const numResolucion =
-        Math.floor(Math.random() * (max - min + 1) + min) * 1000000 +
-        Math.floor(Math.random() * (max - min + 1) + min) * 100000 +
-        Math.floor(Math.random() * (max - min + 1) + min) * 10000 +
-        Math.floor(Math.random() * (max - min + 1) + min) * 1000 +
-        Math.floor(Math.random() * (max - min + 1) + min) * 100 +
-        Math.floor(Math.random() * (max - min + 1) + min) * 10 +
-        Math.floor(Math.random() * (max - min + 1) + min) * 1;
+      const numResolucion = Math.floor(Math.random() * (max - min + 1) + min);
 
       dataSheetCalc.forEach(async (row, indexRow) => {
         if (dataSheetCalc[indexRow + 1]) {
