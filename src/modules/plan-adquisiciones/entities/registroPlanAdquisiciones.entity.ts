@@ -90,3 +90,4 @@ export class RegistroPlanAdquisicionesEntity {
       Logger.log(`Se creó la entidad Registro Plan Adquisiciones para el Plan de Adquisiciones: ${this.plan_adquisiciones_id}`);
     }
   }
+  
