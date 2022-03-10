@@ -3,6 +3,8 @@ export class GeneralRubroApropiacion {
   nombre: string;
   descripcion: string;
   activo: boolean;
+  fechaCreacion: Date;
+  fechaModificacion: Date;
 }
 
 export class NodoRubroApropiacion {
@@ -12,6 +14,7 @@ export class NodoRubroApropiacion {
   unidad_ejecutora: string
   bloqueado: boolean;
   apropiaciones: boolean;
+  _id: string;
 }
 
 export class Movimientos { }
