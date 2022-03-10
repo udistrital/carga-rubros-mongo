@@ -21,7 +21,7 @@ export class RegistroPlanAdquisicionesMapperService {
       registroPlanAdquisicionesDTO.rubro_id,
       registroPlanAdquisicionesDTO.fecha_estimada_inicio,
       registroPlanAdquisicionesDTO.fecha_estimada_fin,
-      registroPlanAdquisicionesDTO.fuente_financiamiento,
+      registroPlanAdquisicionesDTO.fuente_financiamiento_id,
       registroPlanAdquisicionesDTO.actividad_id,
       registroPlanAdquisicionesDTO.valor_actividad,
     );
@@ -44,7 +44,7 @@ export class RegistroPlanAdquisicionesMapperService {
       registroPlanAdquisicionesEntity.rubro_id,
       registroPlanAdquisicionesEntity.fecha_estimada_inicio,
       registroPlanAdquisicionesEntity.fecha_estimada_fin,
-      registroPlanAdquisicionesEntity.fuente_financiamiento,
+      registroPlanAdquisicionesEntity.fuente_financiamiento_id,
       registroPlanAdquisicionesEntity.actividad_id,
       registroPlanAdquisicionesEntity.valor_actividad,
     );
