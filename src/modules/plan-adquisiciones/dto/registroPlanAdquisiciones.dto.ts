@@ -12,7 +12,7 @@ export class RegistroPlanAdquisicionesDTO {
   rubro_id: string;
   fecha_estimada_inicio: Date;
   fecha_estimada_fin: Date;
-  fuente_financiamiento: string;
+  fuente_financiamiento_id: string;
   actividad_id: number;
   valor_actividad: number;
 
@@ -30,7 +30,7 @@ export class RegistroPlanAdquisicionesDTO {
     rubro_id: string,
     fecha_estimada_inicio: Date,
     fecha_estimada_fin: Date,
-    fuente_financiamiento: string,
+    fuente_financiamiento_id: string,
     actividad_id: number,
     valor_actividad: number,
   ) {
@@ -47,7 +47,7 @@ export class RegistroPlanAdquisicionesDTO {
     this.rubro_id = rubro_id;
     this.fecha_estimada_inicio = fecha_estimada_inicio;
     this.fecha_estimada_fin = fecha_estimada_fin;
-    this.fuente_financiamiento = fuente_financiamiento;
+    this.fuente_financiamiento_id = fuente_financiamiento_id;
     this.actividad_id = actividad_id;
     this.valor_actividad = valor_actividad;
   }

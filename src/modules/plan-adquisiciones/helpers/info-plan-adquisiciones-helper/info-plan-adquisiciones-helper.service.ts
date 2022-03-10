@@ -360,7 +360,6 @@ export class InfoPlanAdquisicionesHelperService {
     dataSheetCalc: any[],
   ): Promise<void> {
     const productos = await this.productoService.findAll();
-    const fuentes = await this.fuenteService.findAll();
 
     const rubrosNoRepeated = this.deleteRepetidosHash(
       dataSheetCalc,
@@ -383,7 +382,7 @@ export class InfoPlanAdquisicionesHelperService {
         responsable_id: rubrosTemp[0]['RESPONSABLE'],
         activo: this.activo,
         meta_id: rubrosTemp[0]['META'],
-        producto_id: productos[0]['_id'],
+        producto_id: String(productos[0]['_id']),
         plan_adquisiciones_id: parseInt(idPlanAdquisicionesInserted),
         rubro_id: rubrosTemp[0]['RUBRO PRESUPUESTAL'],
         fecha_estimada_inicio: new Date(
@@ -392,7 +391,7 @@ export class InfoPlanAdquisicionesHelperService {
         fecha_estimada_fin: new Date(
           Date.UTC(0, 0, rubrosTemp[0]['DURACION ESTIMADA'], -5),
         ),
-        fuente_financiamiento: fuentes[0]['_id'],
+        fuente_financiamiento_id: "",
         actividad_id: rubrosTemp[0]['ACTIVIDAD'],
         valor_actividad: rubrosTemp[0][`VALOR ASIGNADO ${this.vigencia}`],
       };
@@ -434,8 +433,9 @@ export class InfoPlanAdquisicionesHelperService {
     idRegistroPlanAdquisicionesInserted: number,
   ): void {
     productos.forEach(async producto => {
+      console.log(producto['_id']);
       const productoTemp = {
-        producto_asociado_id: producto['_id'],
+        producto_asociado_id: String(producto['_id']),
         fecha_modificacion: new Date(),
         activo: this.activo,
         fecha_creacion: new Date(),

@@ -13,6 +13,8 @@ import { ProductoService } from './services/producto/producto.service';
 import { FuenteService } from './services/fuente/fuente.service';
 import { FuenteFinanciamiento, FuenteFinanciamientoSchema } from './models/fuente.interface';
 import { FuenteFinanciamientoVigencia, FuenteFinanciamientoVigenciaSchema } from './models/fuente-vigencia.interface';
+import { CreateRubroMongoService } from '../rubros/create-rubro-mongo/create-rubro-mongo.service';
+import { Rubros, RubrosSchema } from '../rubros/schemas/rubro.schema';
 
 @Module({
   imports: [
@@ -20,7 +22,8 @@ import { FuenteFinanciamientoVigencia, FuenteFinanciamientoVigenciaSchema } from
       { name: Producto.name, schema: ProductoSchema },
       { name: RubroApropiacion.name, schema: RubroApropiacionSchema },
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
-      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoVigenciaSchema }
+      { name: FuenteFinanciamientoVigencia.name, schema: FuenteFinanciamientoVigenciaSchema },
+      { name: Rubros.name, schema: RubrosSchema }
     ]),
     ApropiacionesModule,
   ],
@@ -31,6 +34,7 @@ import { FuenteFinanciamientoVigencia, FuenteFinanciamientoVigenciaSchema } from
     ApropiacionesService,
     InfoRubroHelperService,
     FuenteService,
+    CreateRubroMongoService,
   ],
 })
 export class ApropiacionesModule {}
