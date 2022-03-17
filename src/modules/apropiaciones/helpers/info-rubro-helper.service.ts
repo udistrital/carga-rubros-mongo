@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as superagent from 'superagent';
 import { ApropiacionesService } from '../services/apropiaciones.service';
-const estado = 'aprobada';
-const vigencia = 2022;
-const bloqueado = true;
 
 import * as XLSX from 'xlsx';
 
@@ -43,7 +40,7 @@ export class InfoRubroHelperService {
           _id: padre['Codigo'],
           nodorubro: {
             general: {
-              vigencia: vigencia,
+              vigencia: process.env.VIGENCIA,
               nombre: row[0]['DESCRIPCION'],
               descripcion: row[0]['DESCRIPCION'],
               activo: false,
@@ -53,7 +50,7 @@ export class InfoRubroHelperService {
             hijos: padre['Hijos'],
             padre: padre['Padre'],
             unidad_ejecutora: row[0]['CODIGO_UNIDAD_EJECUTORA'],
-            bloqueado: bloqueado,
+            bloqueado: process.env.BLOQUEADO,
             apropiaciones: padre['Apropiaciones'],
             _id: padre['Codigo'],
           },
@@ -61,7 +58,7 @@ export class InfoRubroHelperService {
           valor_actual: Math.ceil(row[0]['VALOR']),
           movimientos: {},
           productos: {},
-          estado: estado,
+          estado: process.env.ESTADO,
           padre: padre['Padre'],
         };
 
@@ -82,7 +79,7 @@ export class InfoRubroHelperService {
           _id: padre['Codigo'],
           nodorubro: {
             general: {
-              vigencia: vigencia,
+              vigencia: process.env.VIGENCIA,
               nombre: padre['nombre'],
               descripcion: padre['Codigo'],
               activo: true,
@@ -92,7 +89,7 @@ export class InfoRubroHelperService {
             hijos: padre['Hijos'],
             padre: padre['Padre'],
             unidad_ejecutora: '1',
-            bloqueado: bloqueado,
+            bloqueado: process.env.BLOQUEADO,
             apropiaciones: padre['Apropiaciones'],
             _id: padre['Codigo'],
           },
@@ -100,7 +97,7 @@ export class InfoRubroHelperService {
           valor_actual: Math.ceil(valorTotal),
           movimientos: {},
           productos: {},
-          estado: estado,
+          estado: process.env.ESTADO,
           padre: padre['Padre'],
         };
 
@@ -153,4 +150,5 @@ export class InfoRubroHelperService {
 
     return arr;
   }
+
 }
