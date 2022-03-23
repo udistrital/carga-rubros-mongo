@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FuenteService } from 'src/modules/apropiaciones/services/fuente/fuente.service';
 import { ProductoService } from 'src/modules/apropiaciones/services/producto/producto.service';
+import * as superagent from 'superagent';
 
 import * as XLSX from 'xlsx';
 import { ActividadService } from '../../services/actividad/actividad.service';
@@ -391,7 +392,7 @@ export class InfoPlanAdquisicionesHelperService {
         fecha_estimada_fin: new Date(
           Date.UTC(0, 0, rubrosTemp[0]['DURACION ESTIMADA'], -5),
         ),
-        fuente_financiamiento_id: "",
+        fuente_financiamiento_id: '',
         actividad_id: rubrosTemp[0]['ACTIVIDAD'],
         valor_actividad: rubrosTemp[0][`VALOR ASIGNADO ${this.vigencia}`],
       };
@@ -468,14 +469,19 @@ export class InfoPlanAdquisicionesHelperService {
     });
   }
 
-  public insertarCodigoArka(
+  public async insertarCodigoArka(
     codigoArka: any[],
     idRegistroPlanAdquisicionesInserted: number,
-  ): void {
+  ): Promise<void> {
     codigoArka.forEach(async codigo => {
       const codigoWithoutSpaces = codigo.replace(/\s+/g, '');
+      const idCodigo: any[] = await superagent
+        .get(
+          `${process.env.CATALOGO_ELEMENTOS_ARKA_URL}/subgrupo?fields=Id,Codigo&limit=1&query=Activo:true,Codigo:${codigoWithoutSpaces}`,
+        )
+        .then(res => res.body[0].Id);
       const codigoArkaDTO = {
-        codigo_arka: codigoWithoutSpaces,
+        codigo_arka: String(idCodigo),
         fecha_modificacion: new Date(),
         activo: this.activo,
         fecha_creacion: new Date(),
