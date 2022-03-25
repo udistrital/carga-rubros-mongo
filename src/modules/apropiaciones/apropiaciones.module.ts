@@ -15,6 +15,7 @@ import { FuenteFinanciamiento, FuenteFinanciamientoSchema } from './models/fuent
 import { FuenteFinanciamientoVigencia, FuenteFinanciamientoVigenciaSchema } from './models/fuente-vigencia.interface';
 import { CreateRubroMongoService } from '../rubros/create-rubro-mongo/create-rubro-mongo.service';
 import { Rubros, RubrosSchema } from '../rubros/schemas/rubro.schema';
+import { InfoFuenteHelperService } from './helpers/info-fuente/info-fuente.service';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { Rubros, RubrosSchema } from '../rubros/schemas/rubro.schema';
     InfoRubroHelperService,
     FuenteService,
     CreateRubroMongoService,
+    InfoFuenteHelperService,
   ],
 })
 export class ApropiacionesModule {}
