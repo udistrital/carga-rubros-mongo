@@ -8,6 +8,7 @@ import { ActividadService } from '../../services/actividad/actividad.service';
 import { CodigoArkaService } from '../../services/codigo-arka/codigo-arka.service';
 import { MetaService } from '../../services/meta-service/meta.service';
 import { ModalidadSeleccionService } from '../../services/modalidad-seleccion/modalidad-seleccion.service';
+import { MovimientoProcesoExternoPlanService } from '../../services/movimiento-proceso-externo-plan/movimiento-proceso-externo-plan.service';
 import { PlanAdquisicionesActividadService } from '../../services/plan-adquisiciones-actividad/plan-adquisiciones-actividad.service';
 import { PlanAdquisicionesService } from '../../services/plan-adquisiciones/plan-adquisiciones.service';
 import { RegistroInversionActividadFuenteService } from '../../services/registro-inversion-actividad-fuente/registro-inversion-actividad-fuente.service';
@@ -28,6 +29,7 @@ export class InfoPlanAdquisicionesHelperService {
   unidad_ejecutora = '1';
   area_funcional = 1;
   centro_gestor = 230;
+  movimientosDetalle = [];
 
   constructor(
     private planAdquisicionesService: PlanAdquisicionesService,
@@ -42,6 +44,7 @@ export class InfoPlanAdquisicionesHelperService {
     private registroInversionActividadFuenteService: RegistroInversionActividadFuenteService,
     private registroProductosAsociadosService: RegistroProductosAsociadosService,
     private registroMetasAsociadasService: RegistroMetasAsociadasService,
+    private movimientoProcesoExternoPlanService: MovimientoProcesoExternoPlanService,
   ) {}
 
   public async uploadPlanAdquisiciones(filedata: Buffer): Promise<void> {
@@ -67,15 +70,38 @@ export class InfoPlanAdquisicionesHelperService {
         return res.id;
       });
 
+    const detalle = {
+      Estado: 'Preliminar',
+      PlanAdquisicionesId: idPlanAdquisicionesInserted,
+    };
+
+    const movimientoProcesoExternoPlanDTO = {
+      tipo_movimiento_id: Number(process.env.TIPOMOVIMIENTOID),
+      proceso_externo: 1,
+      movimiento_proceso_externo: 0,
+      activo: true,
+      fecha_creacion: new Date(),
+      fecha_modificacion: new Date(),
+      detalle: JSON.stringify(detalle),
+    };
+
+    const idMovimientoProcesoExternoPlanInserted = await this.movimientoProcesoExternoPlanService
+      .newMovimientoProcesoExternoPlan(movimientoProcesoExternoPlanDTO)
+      .then(res => {
+        return res.id;
+      });
+
     this.insertarRegistroPlanAdquisiciones(
       idPlanAdquisicionesInserted,
       dataSheetCalc,
+      idMovimientoProcesoExternoPlanInserted,
     );
   }
 
   public insertarMetas(
     rubros: any[],
     idRegistroPlanAdquisicionesInserted: number,
+    idMovimientoProcesoExternoPlanInserted: number,
   ): void {
     const lineamiento_id = null;
 
@@ -112,6 +138,8 @@ export class InfoPlanAdquisicionesHelperService {
         idMetaInserted,
         rubros,
         idRegistroPlanAdquisicionesInserted,
+        meta['RUBRO PRESUPUESTAL'],
+        idMovimientoProcesoExternoPlanInserted,
       );
     });
   }
@@ -121,6 +149,8 @@ export class InfoPlanAdquisicionesHelperService {
     idMetaInserted: number,
     rubros: any[],
     idRegistroPlanAdquisicionesInserted: number,
+    rubroCodigo: string,
+    idMovimientoProcesoExternoPlanInserted: number,
   ): void {
     const tempActividades = rubros.filter(rubro => rubro['META'] == metaNum);
 
@@ -142,6 +172,8 @@ export class InfoPlanAdquisicionesHelperService {
         idRegistroPlanAdquisicionesInserted,
         idActividadInserted,
         actividad,
+        rubroCodigo,
+        idMovimientoProcesoExternoPlanInserted,
       );
     });
   }
@@ -150,6 +182,8 @@ export class InfoPlanAdquisicionesHelperService {
     idRegistroPlanAdquisicionesInserted: number,
     idActividadInserted: number,
     actividad: any,
+    rubroCodigo: string,
+    idMovimientoProcesoExternoPlanInserted: number,
   ): Promise<void> {
     const tempRegistroPlanAdquisicionesActividad = {
       valor: Number(actividad[`VALOR ASIGNADO ${this.vigencia}`]),
@@ -164,16 +198,20 @@ export class InfoPlanAdquisicionesHelperService {
       .newPlanAdquisicionesActividad(tempRegistroPlanAdquisicionesActividad)
       .then(res => res.id);
 
-    this.insertarRegistroInvercionActividadFuente(
+    this.insertarRegistroInversionActividadFuente(
       idPlanAdquisicionActividadInserted,
       actividad,
+      rubroCodigo,
+      idMovimientoProcesoExternoPlanInserted,
     );
   }
 
-  public insertarRegistroInvercionActividadFuente(
+  public async insertarRegistroInversionActividadFuente(
     idPlanAdquisicionActividadInserted: number,
     actividad: any,
-  ): void {
+    rubroCodigo: string,
+    idMovimientoProcesoExternoPlanInserted: number,
+  ): Promise<void> {
     const keysObject = Object.keys(actividad);
 
     const fuentesNames = keysObject.slice(
@@ -184,7 +222,7 @@ export class InfoPlanAdquisicionesHelperService {
     //Expresión regular para identificar el código de la fuente
     const re = '[a-zA-Z0-9\\-]{10}';
 
-    fuentesNames.forEach(async fuenteName => {
+    fuentesNames.forEach(async (fuenteName, index) => {
       if (actividad[fuenteName] != 0) {
         const tempRegistroInversionActividadFuente = {
           fuente_financiamiento_id: fuenteName.match(re)[0],
@@ -198,6 +236,34 @@ export class InfoPlanAdquisicionesHelperService {
         await this.registroInversionActividadFuenteService.newRegistroInversionActividadFuente(
           tempRegistroInversionActividadFuente,
         );
+
+        const detalleCuenPre = {
+          RubroId: rubroCodigo,
+          // Probar si guardar el Id de la actividad insertada o el id de la actividad propiamente
+          ActividadId: idPlanAdquisicionActividadInserted,
+          FuenteFinanciamientoId: fuenteName.match(re)[0],
+        };
+
+        const tempMovimientoDetalle = {
+          Cuen_Pre: JSON.stringify(detalleCuenPre),
+          Mov_Proc_Ext: String(idMovimientoProcesoExternoPlanInserted),
+          Valor: actividad[fuenteName],
+        };
+
+        this.movimientosDetalle.push(tempMovimientoDetalle);
+      }
+
+      if (this.movimientosDetalle.length === 112) {
+        await superagent
+          .post(
+            `${process.env.MOVIMIENTOS_CRUD}/movimiento_detalle/crearMovimientosDetalle`,
+          )
+          .send(this.movimientosDetalle)
+          .catch(err =>
+            Logger.error(
+              `Ocurrió un error al insertar los movimientos detalle ${err.message}`,
+            ),
+          );
       }
     });
   }
@@ -205,6 +271,7 @@ export class InfoPlanAdquisicionesHelperService {
   public async insertarRegistroPlanAdquisiciones(
     idPlanAdquisicionesInserted: string,
     dataSheetCalc: any[],
+    idMovimientoProcesoExternoPlanInserted: number,
   ): Promise<void> {
     const productos = await this.productoService.findAll();
 
@@ -267,7 +334,11 @@ export class InfoPlanAdquisicionesHelperService {
         );
       });
 
-      this.insertarMetas(rubrosTemp, idRegistroPlanAdquisicionesInserted);
+      this.insertarMetas(
+        rubrosTemp,
+        idRegistroPlanAdquisicionesInserted,
+        idMovimientoProcesoExternoPlanInserted,
+      );
       this.insertarRegistroProductosAsociados(
         productos,
         idRegistroPlanAdquisicionesInserted,
@@ -325,7 +396,12 @@ export class InfoPlanAdquisicionesHelperService {
         .get(
           `${process.env.CATALOGO_ELEMENTOS_ARKA_URL}/subgrupo?fields=Id,Codigo&limit=1&query=Activo:true,Codigo:${codigoWithoutSpaces}`,
         )
-        .then(res => res.body[0].Id);
+        .then(res => res.body[0].Id)
+        .catch(err =>
+          Logger.error(
+            `Ocurrió un error al consultar el elemento en Arka ${err.message}`,
+          ),
+        );
       const codigoArkaDTO = {
         codigo_arka: String(idCodigo),
         fecha_modificacion: new Date(),

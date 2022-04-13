@@ -58,6 +58,10 @@ import { RegistroMetasAsociadasMapperService } from './mappers/registro-metas-as
 import { RegistroMetasAsociadasRepositoryService } from './repositories/registro-metas-asociadas-repository/registro-metas-asociadas-repository.service';
 import { RegistroMetasAsociadasService } from './services/registro-metas-asociadas/registro-metas-asociadas.service';
 import { RegistroMetasAsociadasEntity } from './entities/registroMetasAsociadas.entity';
+import { MovimientoProcesoExternoPlanMapperService } from './mappers/movimiento-proceso-externo-plan-mapper/movimiento-proceso-externo-plan-mapper.service';
+import { MovimientoProcesoExternoPlanRepositoryService } from './repositories/movimiento-proceso-externo-plan-repository/movimiento-proceso-externo-plan-repository.service';
+import { MovimientoProcesoExternoPlanService } from './services/movimiento-proceso-externo-plan/movimiento-proceso-externo-plan.service';
+import { MovimientoProcesoExternoPlanEntity } from './entities/movimientoProcesoExternoPlan.entity';
 
 @Module({
   imports: [
@@ -71,8 +75,8 @@ import { RegistroMetasAsociadasEntity } from './entities/registroMetasAsociadas.
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: !!process.env.DB_SYNC,
-      schema: process.env.DB_SCHEMA,
+      synchronize: !process.env.DB_SYNC,
+      // schema: process.env.DB_SCHEMA,
     }),
     TypeOrmModule.forFeature([
       PlanAdquisicionesEntity,
@@ -84,7 +88,8 @@ import { RegistroMetasAsociadasEntity } from './entities/registroMetasAsociadas.
       PlanAdquisicionesActividadEntity,
       RegistroInversionActividadFuenteEntity,
       RegistroProductosAsociadosEntity,
-      RegistroMetasAsociadasEntity
+      RegistroMetasAsociadasEntity,
+      MovimientoProcesoExternoPlanEntity,
     ]),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
@@ -130,6 +135,9 @@ import { RegistroMetasAsociadasEntity } from './entities/registroMetasAsociadas.
     RegistroMetasAsociadasMapperService,
     RegistroMetasAsociadasRepositoryService,
     RegistroMetasAsociadasService,
+    MovimientoProcesoExternoPlanMapperService,
+    MovimientoProcesoExternoPlanRepositoryService,
+    MovimientoProcesoExternoPlanService,
   ],
 })
 export class PlanAdquisicionesModule {}
