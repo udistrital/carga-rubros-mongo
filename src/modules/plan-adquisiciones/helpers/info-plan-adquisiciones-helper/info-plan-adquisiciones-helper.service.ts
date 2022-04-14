@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FuenteService } from 'src/modules/apropiaciones/services/fuente/fuente.service';
 import { ProductoService } from 'src/modules/apropiaciones/services/producto/producto.service';
 import * as superagent from 'superagent';
@@ -30,12 +30,13 @@ export class InfoPlanAdquisicionesHelperService {
   area_funcional = 1;
   centro_gestor = 230;
   movimientosDetalle = [];
+  registrosFuente = [];
+  auxContadorMovimientos = 0;
 
   constructor(
     private planAdquisicionesService: PlanAdquisicionesService,
     private metaService: MetaService,
     private actividadService: ActividadService,
-    private fuenteService: FuenteService,
     private productoService: ProductoService,
     private registroPlanAdquisicionesService: RegistroPlanAdquisicionesService,
     private modalidadSeleccionService: ModalidadSeleccionService,
@@ -54,6 +55,25 @@ export class InfoPlanAdquisicionesHelperService {
     const sheet = workBookSheets[0];
 
     const dataSheetCalc = XLSX.utils.sheet_to_json(workBook.Sheets[sheet]);
+
+    dataSheetCalc[0]['FUENTE DE LOS RECURSOS'];
+
+    const keysObject = Object.keys(dataSheetCalc[0]);
+
+    const fuentesNames = keysObject.slice(
+      -1 *
+        (keysObject.length - keysObject.indexOf('FUENTE DE LOS RECURSOS') - 1),
+    );
+
+    this.auxContadorMovimientos = 0;
+
+    dataSheetCalc.forEach(renglon => {
+      fuentesNames.forEach(fuenteName => {
+        if (renglon[fuenteName] !== 0) {
+          this.auxContadorMovimientos = this.auxContadorMovimientos + 1;
+        }
+      });
+    });
 
     const planAdquisicionesDTO = {
       descripcion: this.descripcion,
@@ -96,6 +116,8 @@ export class InfoPlanAdquisicionesHelperService {
       dataSheetCalc,
       idMovimientoProcesoExternoPlanInserted,
     );
+
+    Logger.log("Se han insertado los datos correctamente");
   }
 
   public insertarMetas(
@@ -222,7 +244,7 @@ export class InfoPlanAdquisicionesHelperService {
     //Expresión regular para identificar el código de la fuente
     const re = '[a-zA-Z0-9\\-]{10}';
 
-    fuentesNames.forEach(async (fuenteName, index) => {
+    fuentesNames.forEach((fuenteName, index) => {
       if (actividad[fuenteName] != 0) {
         const tempRegistroInversionActividadFuente = {
           fuente_financiamiento_id: fuenteName.match(re)[0],
@@ -233,9 +255,7 @@ export class InfoPlanAdquisicionesHelperService {
           registro_plan_adquisiciones_actividad_id: idPlanAdquisicionActividadInserted,
         };
 
-        await this.registroInversionActividadFuenteService.newRegistroInversionActividadFuente(
-          tempRegistroInversionActividadFuente,
-        );
+        this.registrosFuente.push(tempRegistroInversionActividadFuente);
 
         const detalleCuenPre = {
           RubroId: rubroCodigo,
@@ -252,19 +272,26 @@ export class InfoPlanAdquisicionesHelperService {
 
         this.movimientosDetalle.push(tempMovimientoDetalle);
       }
+    });
 
-      if (this.movimientosDetalle.length === 112) {
-        await superagent
-          .post(
-            `${process.env.MOVIMIENTOS_CRUD}/movimiento_detalle/crearMovimientosDetalle`,
-          )
-          .send(this.movimientosDetalle)
-          .catch(err =>
-            Logger.error(
-              `Ocurrió un error al insertar los movimientos detalle ${err.message}`,
-            ),
-          );
-      }
+    if (this.movimientosDetalle.length === this.auxContadorMovimientos) {
+      await superagent
+        .post(
+          `${process.env.MOVIMIENTOS_CRUD}/movimiento_detalle/crearMovimientosDetalle`,
+        )
+        .send(this.movimientosDetalle)
+        .catch(err =>
+          Logger.error(
+            `Ocurrió un error al insertar los movimientos detalle ${err.message}`,
+          ),
+        )
+        .then(() => Logger.log("Se insertaron los movimientos detalle"));
+    }
+
+    this.registrosFuente.forEach(async registro => {
+      await this.registroInversionActividadFuenteService.newRegistroInversionActividadFuente(
+        registro,
+      );
     });
   }
 
@@ -351,7 +378,6 @@ export class InfoPlanAdquisicionesHelperService {
     idRegistroPlanAdquisicionesInserted: number,
   ): void {
     productos.forEach(async producto => {
-      console.log(producto['_id']);
       const productoTemp = {
         producto_asociado_id: String(producto['_id']),
         fecha_modificacion: new Date(),
@@ -396,7 +422,10 @@ export class InfoPlanAdquisicionesHelperService {
         .get(
           `${process.env.CATALOGO_ELEMENTOS_ARKA_URL}/subgrupo?fields=Id,Codigo&limit=1&query=Activo:true,Codigo:${codigoWithoutSpaces}`,
         )
-        .then(res => res.body[0].Id)
+        .then(res => {
+          // Logger.debug("Se encontró el producto del Catálogo Arka")
+          return res.body[0].Id
+        })
         .catch(err =>
           Logger.error(
             `Ocurrió un error al consultar el elemento en Arka ${err.message}`,
