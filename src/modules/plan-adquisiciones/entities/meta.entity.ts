@@ -47,6 +47,6 @@ export class MetaEntity {
         this.rubro = rubro;
         this.lineamiento_id = lineamiento_id;
 
-        Logger.log(`Se creó la entidad Meta: ${this.nombre}`);
+        // Logger.debbug(`Se creó la entidad Meta: ${this.nombre}`);
     }
 }

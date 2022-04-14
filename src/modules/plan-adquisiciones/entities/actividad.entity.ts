@@ -41,6 +41,6 @@ export class ActividadEntity {
     this.activo = activo;
     this.meta_id = meta_id;
 
-    Logger.log(`Se creó la entidad Actividad: ${this.nombre}`);
+    // Logger.debbug(`Se creó la entidad Actividad: ${this.nombre}`);
   }
 }

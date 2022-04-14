@@ -36,6 +36,6 @@ export class CodigoArkaEntity {
     this.fecha_creacion = fecha_creacion;
     this.registro_plan_adquisiciones_id = registro_plan_adquisiciones_id;
 
-    Logger.log(`Se creó la entidad Registro Plan Adquisiciones Arka para el Registro Plan Adquisiciones: ${this.registro_plan_adquisiciones_id}`);
+    // Logger.debbug(`Se creó la entidad Registro Plan Adquisiciones Arka para el Registro Plan Adquisiciones: ${this.registro_plan_adquisiciones_id}`);
   }
 }

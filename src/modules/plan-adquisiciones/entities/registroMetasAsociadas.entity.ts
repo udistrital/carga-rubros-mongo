@@ -36,8 +36,8 @@ export class RegistroMetasAsociadasEntity {
     this.registro_plan_adquisiciones_id = registro_plan_adquisiciones_id;
     this.meta_id = meta_id;
 
-    Logger.log(
-      `Se creo la entidad Registro Plan Adquisiciones Metas Asociadas para el Registro Plan Adquisiciones: ${this.registro_plan_adquisiciones_id}`,
-    );
+    // Logger.debbug(
+    //   `Se creo la entidad Registro Plan Adquisiciones Metas Asociadas para el Registro Plan Adquisiciones: ${this.registro_plan_adquisiciones_id}`,
+    // );
   }
 }

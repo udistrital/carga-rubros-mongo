@@ -47,8 +47,8 @@ export class MovimientoProcesoExternoPlanEntity {
     this.fecha_modificacion = fecha_modificacion;
     this.detalle = detalle;
 
-    Logger.log(
-      `Se ha creado la entidad Movimiento Proceso Externo Plan para el detalle ${this.detalle}`,
-    );
+    // Logger.debbug(
+    //   `Se ha creado la entidad Movimiento Proceso Externo Plan para el detalle ${this.detalle}`,
+    // );
   }
 }

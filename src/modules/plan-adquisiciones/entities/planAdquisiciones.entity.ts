@@ -41,6 +41,6 @@ export class PlanAdquisicionesEntity {
     this.activo = activo;
     this.publicado = publicado;
 
-    Logger.log(`Se creó la entidad Plan Adquisiciones: ${this.descripcion}`);
+    // Logger.debbug(`Se creó la entidad Plan Adquisiciones: ${this.descripcion}`);
   }
 }

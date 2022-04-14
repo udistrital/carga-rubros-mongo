@@ -45,8 +45,8 @@ export class RegistroInversionActividadFuenteEntity {
     this.fecha_creacion = fecha_creacion;
     this.registro_plan_adquisiciones_actividad_id = registro_plan_adquisiciones_actividad_id;
 
-    Logger.log(
-      `Se ha creado la entidad Registro Inversión Actividad Fuente Financiamiento para el Registro Plan Adquisiciones Actividad ${this.registro_plan_adquisiciones_actividad_id}`,
-    );
+    // Logger.debbug(
+    //   `Se ha creado la entidad Registro Inversión Actividad Fuente Financiamiento para el Registro Plan Adquisiciones Actividad ${this.registro_plan_adquisiciones_actividad_id}`,
+    // );
   }
 }
