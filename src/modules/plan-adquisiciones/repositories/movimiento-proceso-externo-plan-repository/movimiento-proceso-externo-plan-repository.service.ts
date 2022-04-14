@@ -8,7 +8,7 @@ import { MovimientoProcesoExternoPlanMapperService } from '../../mappers/movimie
 @Injectable()
 export class MovimientoProcesoExternoPlanRepositoryService {
     constructor(
-        @InjectRepository(MovimientoProcesoExternoPlanEntity)
+        @InjectRepository(MovimientoProcesoExternoPlanEntity, 'MovimientosConection')
         private movimientoProcesoExternoPlanRepository: Repository<MovimientoProcesoExternoPlanEntity>,
         private movimientoProcesoExternoMapper: MovimientoProcesoExternoPlanMapperService
     ) {}

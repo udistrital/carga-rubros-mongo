@@ -1,7 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('plan_adquisiciones.Registro_funcionamiento-Modalidad_seleccion')
+@Entity('Registro_funcionamiento-Modalidad_seleccion')
 export class ModalidadSeleccionEntity {
 
     @PrimaryGeneratedColumn()

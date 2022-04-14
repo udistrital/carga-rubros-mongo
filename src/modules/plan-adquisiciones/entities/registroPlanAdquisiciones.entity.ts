@@ -1,7 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('plan_adquisiciones.Registro_plan_adquisiciones')
+@Entity('Registro_plan_adquisiciones')
 export class RegistroPlanAdquisicionesEntity {
 
     @PrimaryGeneratedColumn()

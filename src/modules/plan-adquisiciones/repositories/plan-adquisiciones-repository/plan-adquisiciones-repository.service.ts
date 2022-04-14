@@ -8,7 +8,7 @@ import { PlanAdquisicionesMapperService } from '../../mappers/plan-adquisiciones
 @Injectable()
 export class PlanAdquisicionesRepositoryService {
   constructor(
-    @InjectRepository(PlanAdquisicionesEntity)
+    @InjectRepository(PlanAdquisicionesEntity, 'PlanAdquisicionesConection')
     private planAdquisicionesRepository: Repository<PlanAdquisicionesEntity>,
     private planAdquisicionesMapper: PlanAdquisicionesMapperService,
   ) {}

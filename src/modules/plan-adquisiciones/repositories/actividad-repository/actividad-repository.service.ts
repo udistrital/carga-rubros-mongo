@@ -8,7 +8,7 @@ import { ActividadMapperService } from '../../mappers/actividad-mapper/actividad
 @Injectable()
 export class ActividadRepositoryService {
   constructor(
-    @InjectRepository(ActividadEntity)
+    @InjectRepository(ActividadEntity, 'PlanAdquisicionesConection')
     private actividadRepository: Repository<ActividadEntity>,
     private actividadMapper: ActividadMapperService,
   ) {}

@@ -8,7 +8,7 @@ import { CodigoArkaMapperService } from '../../mappers/codigo-arka-mapper/codigo
 @Injectable()
 export class CodigoArkaRepositoryService {
   constructor(
-    @InjectRepository(CodigoArkaEntity)
+    @InjectRepository(CodigoArkaEntity, 'PlanAdquisicionesConection')
     private codigoArkaRepository: Repository<CodigoArkaEntity>,
     private codigoArkaMapper: CodigoArkaMapperService,
   ) {}

@@ -8,7 +8,7 @@ import { ModalidadSeleccionMapperService } from '../../mappers/modalidad-selecci
 @Injectable()
 export class ModalidadSeleccionRepositoryService {
   constructor(
-    @InjectRepository(ModalidadSeleccionEntity)
+    @InjectRepository(ModalidadSeleccionEntity, 'PlanAdquisicionesConection')
     private modalidadSeleccionRepository: Repository<ModalidadSeleccionEntity>,
     private modalidadSeleccionMapper: ModalidadSeleccionMapperService,
   ) {}

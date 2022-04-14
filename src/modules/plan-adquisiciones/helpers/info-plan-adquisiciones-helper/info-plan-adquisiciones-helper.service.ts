@@ -117,7 +117,7 @@ export class InfoPlanAdquisicionesHelperService {
       idMovimientoProcesoExternoPlanInserted,
     );
 
-    Logger.log("Se han insertado los datos correctamente");
+    Logger.log('Se han insertado los datos correctamente');
   }
 
   public insertarMetas(
@@ -244,6 +244,8 @@ export class InfoPlanAdquisicionesHelperService {
     //Expresión regular para identificar el código de la fuente
     const re = '[a-zA-Z0-9\\-]{10}';
 
+    this.registrosFuente = [];
+    
     fuentesNames.forEach((fuenteName, index) => {
       if (actividad[fuenteName] != 0) {
         const tempRegistroInversionActividadFuente = {
@@ -285,7 +287,7 @@ export class InfoPlanAdquisicionesHelperService {
             `Ocurrió un error al insertar los movimientos detalle ${err.message}`,
           ),
         )
-        .then(() => Logger.log("Se insertaron los movimientos detalle"));
+        .then(() => Logger.log('Se insertaron los movimientos detalle'));
     }
 
     this.registrosFuente.forEach(async registro => {
@@ -424,7 +426,7 @@ export class InfoPlanAdquisicionesHelperService {
         )
         .then(res => {
           // Logger.debug("Se encontró el producto del Catálogo Arka")
-          return res.body[0].Id
+          return res.body[0].Id;
         })
         .catch(err =>
           Logger.error(
