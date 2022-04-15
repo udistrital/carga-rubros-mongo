@@ -41,8 +41,8 @@ export class RegistroProductosAsociadosEntity {
     this.registro_plan_adquisiciones_id = registro_plan_adquisiciones_id;
     this.porcentaje_distribucion = porcentaje_distribucion;
 
-    // Logger.debbug(
-    //   `Se ha creado la entidad Registro Plan Adquisiciones Productos Asociados para el Registro Plan Adquisiciones ${this.registro_plan_adquisiciones_id}`,
-    // );
+    Logger.log(
+      `Se ha creado la entidad Registro Plan Adquisiciones Productos Asociados para el Registro Plan Adquisiciones ${this.registro_plan_adquisiciones_id}`,
+    );
   }
 }

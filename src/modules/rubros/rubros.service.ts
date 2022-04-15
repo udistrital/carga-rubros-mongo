@@ -100,7 +100,7 @@ export class RubrosService {
             })
             return nodos;
         } catch (error) {
-            Logger.log(error)
+            Logger.error(error)
             throw new HttpException('Ha ocurrido un error al organizar padre e hijos del arbol 2', 500)
         }
     }

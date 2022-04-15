@@ -425,7 +425,7 @@ export class InfoPlanAdquisicionesHelperService {
           `${process.env.CATALOGO_ELEMENTOS_ARKA_URL}/subgrupo?fields=Id,Codigo&limit=1&query=Activo:true,Codigo:${codigoWithoutSpaces}`,
         )
         .then(res => {
-          // Logger.debug("Se encontró el producto del Catálogo Arka")
+          Logger.log("Se encontró el producto del Catálogo Arka")
           return res.body[0].Id;
         })
         .catch(err =>

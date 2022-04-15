@@ -37,6 +37,6 @@ export class ModalidadSeleccionEntity {
         this.fecha_creacion = fecha_creacion;
         this.registro_plan_adquisiciones_id = registro_plan_adquisiciones_id;
 
-        // Logger.debbug(`Se creó la entidad Registro Funcionamiento Modalidad de Selección para el Registro Plan de Adquisiciones: ${this.registro_plan_adquisiciones_id}`);
+        Logger.log(`Se creó la entidad Registro Funcionamiento Modalidad de Selección para el Registro Plan de Adquisiciones: ${this.registro_plan_adquisiciones_id}`);
     }
 }

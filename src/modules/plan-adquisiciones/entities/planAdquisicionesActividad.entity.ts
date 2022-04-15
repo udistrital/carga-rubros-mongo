@@ -45,8 +45,8 @@ export class PlanAdquisicionesActividadEntity {
     this.actividad_id = actividad_id;
     this.registro_plan_adquisiciones_id = registro_plan_adquisiciones_id;
 
-    // Logger.debbug(
-    //   `Se creó la entidad Registro Plan Adquisiciones Actividad para el Registro Plan Adquisiciones: ${registro_plan_adquisiciones_id}`,
-    // );
+    Logger.log(
+      `Se creó la entidad Registro Plan Adquisiciones Actividad para el Registro Plan Adquisiciones: ${registro_plan_adquisiciones_id}`,
+    );
   }
 }

@@ -22,7 +22,7 @@ const CONNECTION_STRING = `mongodb://${process.env.USER_MONGO}:${process.env.PAS
 })
 class AppModule {
   constructor() {
-    Logger.debug(`CONNECTION_STRING=${CONNECTION_STRING}`);
+    Logger.log(`CONNECTION_STRING=${CONNECTION_STRING}`);
   }
 }
 
