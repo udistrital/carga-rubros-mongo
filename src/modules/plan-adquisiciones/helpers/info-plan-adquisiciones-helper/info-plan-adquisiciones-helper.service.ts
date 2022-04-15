@@ -243,7 +243,6 @@ export class InfoPlanAdquisicionesHelperService {
     const re = '[a-zA-Z0-9\\-]{10}';
 
     this.registrosFuente = [];
-
     fuentesNames.forEach((fuenteName, index) => {
       if (actividad[fuenteName] != 0) {
         const tempRegistroInversionActividadFuente = {
@@ -279,7 +278,8 @@ export class InfoPlanAdquisicionesHelperService {
         .post(
           `${process.env.MOVIMIENTOS_CRUD}/movimiento_detalle/crearMovimientosDetalle`,
         )
-        .send(this.movimientosDetalle)
+        .set('accept', 'json')
+        .send(JSON.stringify(this.movimientosDetalle))
         .catch(err =>
           Logger.error(
             `Ocurrió un error al insertar los movimientos detalle ${err.message}`,
