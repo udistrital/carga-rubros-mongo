@@ -56,8 +56,6 @@ export class InfoPlanAdquisicionesHelperService {
 
     const dataSheetCalc = XLSX.utils.sheet_to_json(workBook.Sheets[sheet]);
 
-    dataSheetCalc[0]['FUENTE DE LOS RECURSOS'];
-
     const keysObject = Object.keys(dataSheetCalc[0]);
 
     const fuentesNames = keysObject.slice(
@@ -245,7 +243,7 @@ export class InfoPlanAdquisicionesHelperService {
     const re = '[a-zA-Z0-9\\-]{10}';
 
     this.registrosFuente = [];
-    
+
     fuentesNames.forEach((fuenteName, index) => {
       if (actividad[fuenteName] != 0) {
         const tempRegistroInversionActividadFuente = {
@@ -430,7 +428,7 @@ export class InfoPlanAdquisicionesHelperService {
         })
         .catch(err =>
           Logger.error(
-            `Ocurrió un error al consultar el elemento en Arka ${err.message}`,
+            `Ocurrió un error al consultar el elemento en Arka ${codigoWithoutSpaces} - ${err.message}`,
           ),
         );
       const codigoArkaDTO = {
