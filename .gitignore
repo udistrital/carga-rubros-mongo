@@ -27,3 +27,5 @@ logs
 *.env
 !.template.env
 !.develop.env
+
+swagger/**
