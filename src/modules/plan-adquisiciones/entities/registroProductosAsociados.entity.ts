@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('Registro_plan_adquisiciones-Productos_Asociados')
 export class RegistroProductosAsociadosEntity {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @Column()
   producto_asociado_id: string;

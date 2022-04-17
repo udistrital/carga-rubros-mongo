@@ -8,7 +8,7 @@ import { MetaMapperService } from '../../mappers/meta-mapper/meta-mapper.service
 @Injectable()
 export class MetaRepositoryService {
   constructor(
-    @InjectRepository(MetaEntity)
+    @InjectRepository(MetaEntity, 'PlanAdquisicionesConection')
     private metaRepository: Repository<MetaEntity>,
     private metaMapper: MetaMapperService,
   ) {}

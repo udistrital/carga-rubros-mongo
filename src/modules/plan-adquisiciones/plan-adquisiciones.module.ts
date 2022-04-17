@@ -58,34 +58,69 @@ import { RegistroMetasAsociadasMapperService } from './mappers/registro-metas-as
 import { RegistroMetasAsociadasRepositoryService } from './repositories/registro-metas-asociadas-repository/registro-metas-asociadas-repository.service';
 import { RegistroMetasAsociadasService } from './services/registro-metas-asociadas/registro-metas-asociadas.service';
 import { RegistroMetasAsociadasEntity } from './entities/registroMetasAsociadas.entity';
+import { MovimientoProcesoExternoPlanMapperService } from './mappers/movimiento-proceso-externo-plan-mapper/movimiento-proceso-externo-plan-mapper.service';
+import { MovimientoProcesoExternoPlanRepositoryService } from './repositories/movimiento-proceso-externo-plan-repository/movimiento-proceso-externo-plan-repository.service';
+import { MovimientoProcesoExternoPlanService } from './services/movimiento-proceso-externo-plan/movimiento-proceso-externo-plan.service';
+import { MovimientoProcesoExternoPlanEntity } from './entities/movimientoProcesoExternoPlan.entity';
 
 @Module({
   imports: [
     PlanAdquisicionesModule,
     ApropiacionesModule,
     TypeOrmModule.forRoot({
+      name: 'PlanAdquisicionesConection',
       type: 'postgres',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      autoLoadEntities: true,
-      synchronize: !!process.env.DB_SYNC,
-      schema: process.env.DB_SCHEMA,
+      synchronize: false,
+      schema: 'plan_adquisiciones',
+      entities: [
+        PlanAdquisicionesEntity,
+        MetaEntity,
+        ActividadEntity,
+        RegistroPlanAdquisicionesEntity,
+        ModalidadSeleccionEntity,
+        CodigoArkaEntity,
+        PlanAdquisicionesActividadEntity,
+        RegistroInversionActividadFuenteEntity,
+        RegistroProductosAsociadosEntity,
+        RegistroMetasAsociadasEntity,
+      ],
     }),
-    TypeOrmModule.forFeature([
-      PlanAdquisicionesEntity,
-      MetaEntity,
-      ActividadEntity,
-      RegistroPlanAdquisicionesEntity,
-      ModalidadSeleccionEntity,
-      CodigoArkaEntity,
-      PlanAdquisicionesActividadEntity,
-      RegistroInversionActividadFuenteEntity,
-      RegistroProductosAsociadosEntity,
-      RegistroMetasAsociadasEntity
-    ]),
+    TypeOrmModule.forRoot({
+      name: 'MovimientosConection',
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
+      synchronize: false,
+      schema: 'movimientos',
+      entities: [MovimientoProcesoExternoPlanEntity],
+    }),
+    TypeOrmModule.forFeature(
+      [
+        PlanAdquisicionesEntity,
+        MetaEntity,
+        ActividadEntity,
+        RegistroPlanAdquisicionesEntity,
+        ModalidadSeleccionEntity,
+        CodigoArkaEntity,
+        PlanAdquisicionesActividadEntity,
+        RegistroInversionActividadFuenteEntity,
+        RegistroProductosAsociadosEntity,
+        RegistroMetasAsociadasEntity,
+      ],
+      'PlanAdquisicionesConection',
+    ),
+    TypeOrmModule.forFeature(
+      [MovimientoProcesoExternoPlanEntity],
+      'MovimientosConection',
+    ),
     MongooseModule.forFeature([
       { name: FuenteFinanciamiento.name, schema: FuenteFinanciamientoSchema },
       {
@@ -130,6 +165,9 @@ import { RegistroMetasAsociadasEntity } from './entities/registroMetasAsociadas.
     RegistroMetasAsociadasMapperService,
     RegistroMetasAsociadasRepositoryService,
     RegistroMetasAsociadasService,
+    MovimientoProcesoExternoPlanMapperService,
+    MovimientoProcesoExternoPlanRepositoryService,
+    MovimientoProcesoExternoPlanService,
   ],
 })
 export class PlanAdquisicionesModule {}

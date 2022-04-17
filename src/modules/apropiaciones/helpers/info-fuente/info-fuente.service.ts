@@ -58,7 +58,7 @@ export class InfoFuenteHelperService {
       await this.fuenteService
         .createFuenteFinanciamiento(tempFuente)
         .catch(err => {
-          Logger.log(err);
+          Logger.error(err);
         });
     });
 
@@ -170,7 +170,7 @@ export class InfoFuenteHelperService {
       await this.fuenteService
         .createFuenteFinanciamientoVigencia(tempFuente)
         .catch(err => {
-          Logger.log(err);
+          Logger.error(err);
         });
     });
   }

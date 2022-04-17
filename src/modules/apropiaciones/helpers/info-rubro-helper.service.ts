@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as superagent from 'superagent';
 import { ApropiacionesService } from '../services/apropiaciones.service';
 
@@ -14,7 +14,11 @@ export class InfoRubroHelperService {
     const rubrosInsertar: any[] = [];
     const rubrosTotal: any[] = await superagent
       .get(`${process.env.URLAPIPLANCUENTASMONGO}/arbol_rubro`)
-      .then(res => res.body.Body);
+      .then(res => {
+        Logger.log("Se recibieron los rubros de manera correcta")
+        return res.body.Body
+      })
+      .catch(err => Logger.error(`Ocurrió un error al consultar el arbol de rubros ${err.message}`));
 
     const workBook = XLSX.read(filedata);
     const workBookSheets = workBook.SheetNames;
