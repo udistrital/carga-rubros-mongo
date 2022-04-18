@@ -27,7 +27,7 @@ export class InfoProductoHelperService {
                     fechaModificacion: new Date(),
                     activo: activo,
                 },
-                codigo: row['CODIGO PRODUCTO']
+                codigo: Number(row['CODIGO PRODUCTO'])
               };
 
               this.productoService.create(producto);
