@@ -90,7 +90,7 @@ export class InfoPlanAdquisicionesHelperService {
 
     const detalle = {
       Estado: 'Preliminar',
-      PlanAdquisicionesId: idPlanAdquisicionesInserted,
+      PlanAdquisicionesId: String(idPlanAdquisicionesInserted),
     };
 
     const movimientoProcesoExternoPlanDTO = {
@@ -216,7 +216,7 @@ export class InfoPlanAdquisicionesHelperService {
 
     const idPlanAdquisicionActividadInserted = await this.planAdquisicionesActividadService
       .newPlanAdquisicionesActividad(tempRegistroPlanAdquisicionesActividad)
-      .then(res => res.id);
+      .then(res => [res.id, res.actividad_id]);
 
     this.insertarRegistroInversionActividadFuente(
       idPlanAdquisicionActividadInserted,
@@ -227,7 +227,7 @@ export class InfoPlanAdquisicionesHelperService {
   }
 
   public async insertarRegistroInversionActividadFuente(
-    idPlanAdquisicionActividadInserted: number,
+    idPlanAdquisicionActividadInserted: number[],
     actividad: any,
     rubroCodigo: string,
     idMovimientoProcesoExternoPlanInserted: number,
@@ -251,7 +251,7 @@ export class InfoPlanAdquisicionesHelperService {
           fecha_modificacion: new Date(),
           activo: this.activo,
           fecha_creacion: new Date(),
-          registro_plan_adquisiciones_actividad_id: idPlanAdquisicionActividadInserted,
+          registro_plan_adquisiciones_actividad_id: idPlanAdquisicionActividadInserted[0],
         };
 
         this.registrosFuente.push(tempRegistroInversionActividadFuente);
@@ -259,7 +259,7 @@ export class InfoPlanAdquisicionesHelperService {
         const detalleCuenPre = {
           RubroId: rubroCodigo,
           // Probar si guardar el Id de la actividad insertada o el id de la actividad propiamente
-          ActividadId: idPlanAdquisicionActividadInserted,
+          ActividadId: idPlanAdquisicionActividadInserted[1],
           FuenteFinanciamientoId: fuenteName.match(re)[0],
         };
 

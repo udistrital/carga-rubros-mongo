@@ -33,7 +33,7 @@ class Producto {
   general: GeneralProducto;
 
   @Prop()
-  codigo: string;
+  codigo: number;
 }
 
 const ProductoSchema = SchemaFactory.createForClass(Producto);

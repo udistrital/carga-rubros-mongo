@@ -9,5 +9,5 @@ export class GeneralProducto {
 
 export class ProductoDTO {
     general: GeneralProducto;
-    codigo: string;
+    codigo: number;
 }
