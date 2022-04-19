@@ -93,8 +93,6 @@ export class InfoPlanAdquisicionesHelperService {
       PlanAdquisicionesId: String(idPlanAdquisicionesInserted),
     };
 
-    // Logger.debug(JSON.stringify(detalle))
-
     const movimientoProcesoExternoPlanDTO = {
       tipo_movimiento_id: Number(process.env.TIPOMOVIMIENTOID),
       proceso_externo: 1,
