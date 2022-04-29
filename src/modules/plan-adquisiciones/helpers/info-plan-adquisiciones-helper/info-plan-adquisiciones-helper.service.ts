@@ -32,6 +32,7 @@ export class InfoPlanAdquisicionesHelperService {
   movimientosDetalle = [];
   registrosFuente = [];
   auxContadorMovimientos = 0;
+  productosCodigoArka = [];
 
   constructor(
     private planAdquisicionesService: PlanAdquisicionesService,
@@ -355,11 +356,25 @@ export class InfoPlanAdquisicionesHelperService {
 
       rubrosTemp.forEach(rubroTemp => {
         const catalogoArkaTemp = String(rubroTemp['CODIGO ARKA']).split('\n');
-        this.insertarCodigoArka(
-          catalogoArkaTemp,
-          idRegistroPlanAdquisicionesInserted,
-        );
+        catalogoArkaTemp.forEach(codigoTemp => {
+          this.productosCodigoArka.push(codigoTemp);
+        });
       });
+
+      Logger.debug("this.productosCodigoArka.length: ");
+      Logger.debug(this.productosCodigoArka.length);
+
+      const productosNoRepeated = this.productosCodigoArka.filter((item,index)=>{
+        return this.productosCodigoArka.indexOf(item) === index;
+      });
+
+      Logger.debug("productosNoRepeated.length: ")
+      Logger.debug(productosNoRepeated.length)
+
+      this.insertarCodigoArka(
+        productosNoRepeated,
+        idRegistroPlanAdquisicionesInserted,
+      );
 
       this.insertarMetas(
         rubrosTemp,
@@ -424,6 +439,7 @@ export class InfoPlanAdquisicionesHelperService {
         )
         .then(res => {
           Logger.log("Se encontró el producto del Catálogo Arka")
+          // Logger.debug(res.body[0].Id)
           return res.body[0].Id;
         })
         .catch(err =>
